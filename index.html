@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduGalp — Formação Interactiva</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0f2318;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:20px}
+#app{width:100%;max-width:520px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+/* NAV */
+.top-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:#0a5c36}
+.logo{font-size:20px;font-weight:700;color:#fff;letter-spacing:.3px}
+.logo span{color:#7ee8a2}
+.pills{display:flex;gap:5px;align-items:center}
+.pill{width:26px;height:5px;border-radius:3px;background:rgba(255,255,255,0.22);transition:.4s}
+.pill.done{background:#7ee8a2}
+.pill.cur{background:#fff}
+.prog-bar{height:3px;background:#e5e7eb}
+.prog-fill{height:3px;background:#0a5c36;transition:.4s}
+/* HOME */
+.home-wrap{padding:20px}
+.home-title{font-size:17px;font-weight:700;margin-bottom:4px}
+.home-sub{font-size:13px;color:#6b7280;margin-bottom:18px}
+.mod-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mod-card{border-radius:14px;padding:18px 16px;cursor:pointer;transition:.18s;border:2px solid transparent;position:relative}
+.mod-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.13)}
+.mod-card .micon{font-size:28px;margin-bottom:8px}
+.mod-card h3{font-size:14px;font-weight:700;margin-bottom:3px}
+.mod-card p{font-size:11px;opacity:.7;line-height:1.4}
+.mod-badge{position:absolute;top:9px;right:9px;font-size:10px;padding:2px 8px;border-radius:99px;font-weight:600;background:rgba(0,0,0,0.1)}
+.mod-badge.done{background:#d1fae5;color:#065f46}
+/* SLIDE VIEW */
+.sv{display:none;flex-direction:column;min-height:600px}
+.sv.on{display:flex}
+.sh{padding:12px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #e5e7eb}
+.back{background:none;border:1px solid #d1d5db;padding:5px 11px;border-radius:7px;cursor:pointer;font-size:12px;color:#374151;font-weight:500}
+.back:hover{background:#f3f4f6}
+.sh-info{flex:1}
+.sh-info h2{font-size:14px;font-weight:700;color:#111}
+.sh-info .sstep{font-size:11px;color:#9ca3af}
+.sh-count{font-size:12px;color:#6b7280;font-weight:600}
+/* NARRATION BAR */
+.nar-bar{margin:14px 18px 0;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px 14px;display:flex;align-items:flex-start;gap:10px}
+.nar-btn{background:#0a5c36;border:none;border-radius:7px;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s}
+.nar-btn:hover{background:#065e3a}
+.nar-btn svg{width:14px;height:14px;fill:#fff}
+.nar-text{font-size:12px;color:#065f46;line-height:1.6;flex:1}
+/* CONTENT */
+.sc{flex:1;padding:14px 18px;overflow-y:auto}
+/* slide elements */
+.slide-hero{width:100%;border-radius:14px;padding:28px 22px;display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:16px}
+.slide-hero .hicon{font-size:48px;margin-bottom:10px}
+.slide-hero h2{font-size:20px;font-weight:700;margin-bottom:6px}
+.slide-hero p{font-size:13px;opacity:.75;line-height:1.6;max-width:320px}
+.section-title{font-size:13px;font-weight:700;color:#111;margin:16px 0 8px;text-transform:uppercase;letter-spacing:.5px}
+.section-title:first-child{margin-top:0}
+.body-text{font-size:13px;color:#374151;line-height:1.7;margin-bottom:12px}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat-box{background:#f9fafb;border-radius:10px;padding:12px;text-align:center;border:1px solid #e5e7eb}
+.stat-num{font-size:24px;font-weight:800;color:#0a5c36;margin-bottom:3px}
+.stat-lbl{font-size:10px;color:#6b7280;line-height:1.3}
+.stat-row.two{grid-template-columns:1fr 1fr}
+.card-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.card-item{background:#f9fafb;border-radius:10px;padding:11px 14px;display:flex;gap:11px;align-items:flex-start;border:1px solid #f3f4f6}
+.card-item .ci{font-size:18px;flex-shrink:0;margin-top:1px}
+.card-item .ct strong{display:block;font-size:13px;font-weight:600;color:#111;margin-bottom:2px}
+.card-item .ct span{font-size:12px;color:#6b7280;line-height:1.5}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.col-box{border-radius:12px;padding:14px}
+.col-box h4{font-size:12px;font-weight:700;margin-bottom:8px}
+.col-box ul{list-style:none;display:flex;flex-direction:column;gap:5px}
+.col-box ul li{font-size:12px;line-height:1.4;display:flex;gap:5px}
+.highlight-box{border-radius:10px;padding:12px 14px;font-size:12px;line-height:1.6;margin-bottom:12px;font-style:italic}
+.r3-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.r3-item{border-radius:10px;padding:14px;text-align:center}
+.r3-item .ri{font-size:24px;margin-bottom:6px}
+.r3-item h4{font-size:12px;font-weight:700;margin-bottom:3px}
+.r3-item p{font-size:11px;opacity:.75;line-height:1.3}
+.steps-list{display:flex;flex-direction:column;gap:0;margin-bottom:14px}
+.step-item{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f3f4f6}
+.step-item:last-child{border-bottom:none}
+.step-num{width:24px;height:24px;border-radius:50%;background:#0a5c36;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-item .st strong{display:block;font-size:13px;font-weight:600;margin-bottom:2px}
+.step-item .st span{font-size:12px;color:#6b7280;line-height:1.5}
+.color-chips{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.chip{border-radius:10px;padding:12px;text-align:center;border:1px solid rgba(0,0,0,0.06)}
+.chip .cbig{font-size:22px;margin-bottom:5px}
+.chip h4{font-size:11px;font-weight:700;margin-bottom:3px}
+.chip p{font-size:10px;opacity:.7;line-height:1.3}
+.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.kpi{background:#f9fafb;border-radius:10px;padding:11px;text-align:center;border:1px solid #e5e7eb}
+.kpi .knum{font-size:18px;font-weight:800;margin-bottom:2px}
+.kpi .klbl{font-size:10px;color:#6b7280;line-height:1.3}
+.kpi.green .knum{color:#059669}
+.kpi.red .knum{color:#dc2626}
+.kpi.purple .knum{color:#7c3aed}
+/* NAV */
+.snav{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-top:1px solid #e5e7eb}
+.nbtn{padding:9px 20px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.15s}
+.nbtn.pri{background:#0a5c36;color:#fff}
+.nbtn.pri:hover{background:#085c34}
+.nbtn.sec{background:#f3f4f6;color:#374151}
+.nbtn.sec:hover{background:#e5e7eb}
+.nbtn:disabled{opacity:.35;cursor:not-allowed}
+/* COMPLETION */
+.done-screen{padding:40px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px}
+.done-circle{width:72px;height:72px;border-radius:50%;background:#d1fae5;display:flex;align-items:center;justify-content:center;font-size:36px}
+.done-screen h2{font-size:20px;font-weight:700}
+.done-screen p{font-size:14px;color:#6b7280;line-height:1.6;max-width:290px}
+.home-btn{background:#0a5c36;color:#fff;border:none;padding:11px 30px;border-radius:10px;font-size:14px;cursor:pointer;font-weight:600}
+.home-btn:hover{background:#085c34}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="top-nav">
+    <div class="logo">Edu<span>Galp</span></div>
+    <div class="pills" id="pills"></div>
+  </div>
+  <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+
+  <div class="home-wrap" id="homeView">
+    <div class="home-title">Formação EduGalp</div>
+    <div class="home-sub">Selecciona um módulo para começar</div>
+    <div class="mod-grid" id="modGrid"></div>
+  </div>
+
+  <div class="sv" id="slideView">
+    <div class="sh">
+      <button class="back" onclick="goHome()">← Voltar</button>
+      <div class="sh-info">
+        <h2 id="shTitle"></h2>
+        <div class="sstep" id="shStep"></div>
+      </div>
+      <span class="sh-count" id="shCount"></span>
+    </div>
+    <div class="nar-bar" id="narBar">
+      <button class="nar-btn" id="narBtn" onclick="toggleNarration()">
+        <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="nar-text" id="narText"></div>
+    </div>
+    <div class="sc" id="slideContent"></div>
+    <div class="snav">
+      <button class="nbtn sec" id="prevBtn" onclick="navigate(-1)">← Anterior</button>
+      <button class="nbtn pri" id="nextBtn" onclick="navigate(1)">Próximo →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── CONTENT ─────────────────────────────────────────────────────────────────
+const MODULES = [
+{
+  id:'water', title:'Água', sub:'Consumo Responsável', icon:'💧',
+  bg:'#e0f2fe', tc:'#0c4a6e',
+  slides:[
+    {
+      step:'Introdução',
+      nar:'A água é o recurso mais precioso da vida humana. Em Moçambique, este recurso enfrenta desafios críticos que afectam milhões de pessoas todos os dias. Neste módulo vamos compreender a realidade, os dados e o que cada um de nós pode fazer para ser parte da solução.',
+      html:`<div class="slide-hero" style="background:#e0f2fe">
+        <div class="hicon">💧</div>
+        <h2 style="color:#0c4a6e">Consumo Responsável de Água</h2>
+        <p style="color:#0369a1">A água é essencial para a vida. Em Moçambique, a pressão sobre os recursos hídricos é crescente e a gestão responsável começa com cada um de nós.</p>
+      </div>
+      <p class="body-text">A água cobre 71% da superfície da Terra, mas apenas <strong>3% é água doce</strong> — e a maior parte encontra-se em glaciares. A água disponível para consumo humano é um recurso finito e precioso que exige gestão responsável.</p>
+      <div class="highlight-box" style="background:#f0f9ff;border-left:3px solid #0ea5e9;color:#0c4a6e">"O consumo responsável começa com conhecer a realidade — e a realidade de Moçambique exige acção urgente."</div>`
+    },
+    {
+      step:'Realidade de Moçambique',
+      nar:'Moçambique enfrenta uma realidade crítica no acesso à água. Apesar de possuir vastos recursos hídricos, apenas 63 por cento da população tem acesso a água potável. 65 por cento não tem saneamento adequado, e 36 por cento ainda pratica fecalismo a céu aberto. Esta situação é agravada pela vulnerabilidade a secas e cheias.',
+      html:`<p class="section-title">Situação actual em Moçambique</p>
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-num">63%</div><div class="stat-lbl">Com acesso a água potável (OMS, 2022)</div></div>
+        <div class="stat-box"><div class="stat-num">65%</div><div class="stat-lbl">Sem saneamento adequado</div></div>
+        <div class="stat-box"><div class="stat-num">36%</div><div class="stat-lbl">Pratica fecalismo a céu aberto</div></div>
+      </div>
+      <p class="body-text">Apesar dos vastos recursos hídricos do país, as lacunas no acesso universal à água potável e ao saneamento são significativas. A vulnerabilidade a eventos climáticos extremos — secas e cheias — agrava ainda mais a pressão sobre os recursos hídricos.</p>
+      <p class="section-title">Crise global da água</p>
+      <div class="card-list">
+        <div class="card-item"><span class="ci">🌍</span><div class="ct"><strong>4 mil milhões de pessoas</strong><span>Enfrentam escassez grave de água durante pelo menos um mês por ano</span></div></div>
+        <div class="card-item"><span class="ci">⚠️</span><div class="ct"><strong>Mais de 2 mil milhões</strong><span>Vivem em países com elevado stress hídrico</span></div></div>
+        <div class="card-item"><span class="ci">🚱</span><div class="ct"><strong>3 em cada 10 pessoas</strong><span>No mundo não têm acesso a água potável segura</span></div></div>
+      </div>
+      <p class="body-text">O crescimento populacional, a expansão agrícola e industrial, e as alterações climáticas aumentam drasticamente a pressão sobre os recursos hídricos globais.</p>`
+    },
+    {
+      step:'Impacto Económico',
+      nar:'A escassez de água não é apenas um problema ambiental — é também uma grave ameaça económica. As projecções das Nações Unidas para 2050 são alarmantes: 45 por cento do produto interno bruto mundial pode estar em risco, e 40 por cento da produção mundial de cereais pode ser afectada.',
+      html:`<p class="section-title">Dimensão económica da escassez</p>
+      <p class="body-text">A escassez de água representa um dos maiores riscos económicos globais do século vinte e um. As projecções da ONU para 2050 revelam um cenário preocupante com impacto directo em Moçambique.</p>
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-num" style="color:#dc2626">45%</div><div class="stat-lbl">do PIB mundial em risco</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#d97706">40%</div><div class="stat-lbl">da produção de cereais ameaçada</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#7c3aed">+30%</div><div class="stat-lbl">de aumento na procura de água</div></div>
+      </div>
+      <p class="section-title">ODS 6 — Metas para 2030</p>
+      <p class="body-text">O Objectivo de Desenvolvimento Sustentável número 6 estabelece metas claras: <em>"Garantir a disponibilidade e gestão sustentável da água e saneamento para todos."</em></p>
+      <div class="card-list">
+        <div class="card-item"><span class="ci">✅</span><div class="ct"><strong>Acesso universal à água potável</strong><span>Para todas as pessoas, independentemente do local onde vivem</span></div></div>
+        <div class="card-item"><span class="ci">✅</span><div class="ct"><strong>Saneamento e higiene adequados</strong><span>Eliminando práticas insalubres que afectam a saúde pública</span></div></div>
+        <div class="card-item"><span class="ci">✅</span><div class="ct"><strong>Melhoria da qualidade da água</strong><span>Reduzindo a poluição e garantindo água segura para consumo</span></div></div>
+        <div class="card-item"><span class="ci">✅</span><div class="ct"><strong>Eficiência no uso em todos os sectores</strong><span>Agricultura, indústria e consumo doméstico</span></div></div>
+      </div>`
+    },
+    {
+      step:'Onde Gastamos Água',
+      nar:'Sabias que a casa de banho representa mais de 50 por cento do consumo doméstico de água? Uma torneira a pingar desperdiça 75 litros por dia. Um autoclismo com fuga desperdiça 750 litros diários. Conhecer estes números é o primeiro passo para reduzir o desperdício.',
+      html:`<p class="section-title">Distribuição do consumo doméstico</p>
+      <p class="body-text">A maior parte da água que consumimos em casa passa pela casa de banho. Conhecer estes números ajuda-nos a identificar onde podemos poupar mais.</p>
+      <div class="card-list">
+        <div class="card-item"><span class="ci">🚿</span><div class="ct"><strong>Casa de banho — +50% do consumo</strong><span>Duche, sanita, lavatório e banheira são os maiores consumidores</span></div></div>
+        <div class="card-item"><span class="ci">🍳</span><div class="ct"><strong>Cozinha — ~20% do consumo</strong><span>Lavar loiça, vegetais, descongelar e beber</span></div></div>
+        <div class="card-item"><span class="ci">👕</span><div class="ct"><strong>Lavandaria — ~15% do consumo</strong><span>Máquina de lavar e lavagem manual de roupa</span></div></div>
+        <div class="card-item"><span class="ci">🌿</span><div class="ct"><strong>Jardim e exterior — ~15% do consumo</strong><span>Rega, limpeza de passeios e automóvel</span></div></div>
+      </div>
+      <p class="section-title">Desperdício comum</p>
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-num" style="color:#dc2626">75L</div><div class="stat-lbl">Torneira a pingar — por dia</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#dc2626">750L</div><div class="stat-lbl">Autoclismo com fuga — por dia</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#d97706">150L</div><div class="stat-lbl">Duche de 15 minutos</div></div>
+      </div>`
+    },
+    {
+      step:'Práticas em Casa',
+      nar:'Existem práticas muito simples que podem poupar centenas de litros de água por dia em casa. Na casa de banho, um duche de 5 minutos em vez de 15 poupa 100 litros. Fechar a torneira ao escovar os dentes poupa 12 litros por lavagem. Na cozinha, lavar a loiça com bacia em vez de deixar a água a correr poupa 50 litros por lavagem.',
+      html:`<p class="section-title">Casa de banho</p>
+      <div class="steps-list">
+        <div class="step-item"><div class="step-num">1</div><div class="st"><strong>Duche rápido de 5 minutos</strong><span>Fechar a água enquanto se ensaboa. Poupa até 100 litros por duche.</span></div></div>
+        <div class="step-item"><div class="step-num">2</div><div class="st"><strong>Fechar a torneira ao escovar dentes</strong><span>Usar copo para enxaguar a boca. Poupa 12 litros por lavagem.</span></div></div>
+        <div class="step-item"><div class="step-num">3</div><div class="st"><strong>Fechar a torneira ao fazer a barba</strong><span>Usar bacia com água. Poupa 20 litros.</span></div></div>
+        <div class="step-item"><div class="step-num">4</div><div class="st"><strong>Recolher água fria do duche</strong><span>Enquanto espera a água aquecer, recolher em balde para reutilizar em limpeza ou rega.</span></div></div>
+        <div class="step-item"><div class="step-num">5</div><div class="st"><strong>Verificar e reportar fugas</strong><span>Um autoclismo com fuga desperdiça 750 litros por dia — resolver imediatamente.</span></div></div>
+      </div>
+      <p class="section-title">Cozinha e lavandaria</p>
+      <div class="card-list">
+        <div class="card-item"><span class="ci">🍽️</span><div class="ct"><strong>Lavar loiça com bacia</strong><span>Sem deixar a água a correr. Poupa 50 litros por lavagem.</span></div></div>
+        <div class="card-item"><span class="ci">🥦</span><div class="ct"><strong>Lavar vegetais em bacia</strong><span>Reutilizar essa água para regar plantas — duplo aproveitamento.</span></div></div>
+        <div class="card-item"><span class="ci">❄️</span><div class="ct"><strong>Descongelar no frigorífico</strong><span>Planear com antecedência — não usar água corrente quente para descongelar.</span></div></div>
+        <div class="card-item"><span class="ci">👗</span><div class="ct"><strong>Reutilizar água de enxaguamento</strong><span>Para limpeza do chão ou quintal — a água ainda é útil.</span></div></div>
+      </div>`
+    },
+    {
+      step:'Trabalho, Escola e Exterior',
+      nar:'O consumo responsável de água não se limita a casa. No trabalho e na escola, pequenas acções diárias têm grande impacto colectivo. Varrer o passeio em vez de lavar com mangueira poupa até 300 litros. Regar as plantas de manhã cedo ou ao final da tarde reduz a evaporação e melhora a absorção.',
+      html:`<p class="section-title">No trabalho</p>
+      <div class="two-col">
+        <div class="col-box" style="background:#f0fdf4">
+          <h4 style="color:#065f46">Boas práticas</h4>
+          <ul>
+            <li><span>✓</span> Fechar bem as torneiras após uso</li>
+            <li><span>✓</span> Usar copo ou garrafa reutilizável</li>
+            <li><span>✓</span> Lavar loiça com bacia</li>
+            <li><span>✓</span> Reportar fugas imediatamente</li>
+            <li><span>✓</span> Ser exemplo para colegas</li>
+          </ul>
+        </div>
+        <div class="col-box" style="background:#fef9c3">
+          <h4 style="color:#854d0e">Consciencialização</h4>
+          <ul>
+            <li><span>💡</span> Partilhar dicas de poupança</li>
+            <li><span>💡</span> Sugerir iniciativas de conservação</li>
+            <li><span>💡</span> Criar cultura de responsabilidade</li>
+            <li><span>💡</span> O teu comportamento inspira outros</li>
+          </ul>
+        </div>
+      </div>
+      <p class="section-title">Na escola e exterior</p>
+      <div class="card-list">
+        <div class="card-item"><span class="ci">🏫</span><div class="ct"><strong>Estudantes responsáveis</strong><span>Fechar torneiras, não brincar com água, reportar desperdício, usar garrafa reutilizável.</span></div></div>
+        <div class="card-item"><span class="ci">🧹</span><div class="ct"><strong>Varrer em vez de lavar com mangueira</strong><span>Para limpar passeios e quintais — poupa até 300 litros por limpeza.</span></div></div>
+        <div class="card-item"><span class="ci">🌅</span><div class="ct"><strong>Regar nas horas certas</strong><span>Manhã cedo ou final da tarde — menos evaporação, melhor absorção pelas plantas.</span></div></div>
+        <div class="card-item"><span class="ci">🌧️</span><div class="ct"><strong>Recolher água da chuva</strong><span>Colocar baldes quando chove para usar em rega e limpeza exterior.</span></div></div>
+      </div>
+      <div class="highlight-box" style="background:#f0fdf4;border-left:3px solid #22c55e;color:#14532d">"Jovens são agentes de mudança — ensinar a família em casa multiplica o impacto."</div>`
+    }
+  ]
+},
+{
+  id:'energy', title:'Energias Renováveis', sub:'Fontes limpas do futuro', icon:'☀️',
+  bg:'#fef3c7', tc:'#78350f',
+  slides:[
+    {
+      step:'Introdução',
+      nar:'As energias renováveis são o futuro energético de Moçambique e do mundo. O país possui um enorme potencial solar, eólico e hídrico ainda por explorar. Neste módulo vamos compreender o que são as energias renováveis, como funcionam, e porque são essenciais para um desenvolvimento sustentável.',
+      html:`<div class="slide-hero" style="background:#fef3c7">
+        <div class="hicon">☀️</div>
+        <h2 style="color:#78350f">Energias Renováveis</h2>
+        <p style="color:#92400e">As energias renováveis vêm de recursos naturais capazes de se regenerar — não se esgotam com o uso humano e causam muito menos impacto ambiental que os combustíveis fósseis.</p>
+      </div>
+      <p class="body-text">A sustentabilidade envolve três dimensões fundamentais que se relacionam entre si:</p>
+      <div class="r3-grid">
+        <div class="r3-item" style="background:#d1fae5"><div class="ri">🌿</div><h4 style="color:#065f46">Ambiental</h4><p style="color:#047857">Protecção da natureza e uso responsável dos recursos</p></div>
+        <div class="r3-item" style="background:#dbeafe"><div class="ri">👥</div><h4 style="color:#1e40af">Social</h4><p style="color:#1d4ed8">Educação, saúde e igualdade para todos</p></div>
+        <div class="r3-item" style="background:#fef3c7"><div class="ri">💼</div><h4 style="color:#92400e">Económica</h4><p style="color:#b45309">Desenvolvimento equilibrado e responsável</p></div>
+      </div>
+      <p class="body-text">Moçambique tem um enorme potencial para energias renováveis. A transição energética permite reduzir a dependência de fontes poluentes e levar energia a mais comunidades remotas.</p>`
+    },
+    {
+      step:'Fontes Renováveis',
+      nar:'Existem seis grandes fontes de energia renovável. A energia solar obtida através da radiação do sol. A energia eólica gerada pelo vento. A energia hidroeléctrica que usa a força da água. A biomassa obtida de resíduos orgânicos. A energia geotérmica proveniente do calor da Terra. E a energia das marés que usa o movimento dos oceanos.',
+      html:`<p class="section-title">As 6 fontes de energia renovável</p>
+      <div class="card-list">
+        <div class="card-item"><span class="ci">☀️</span><div class="ct"><strong>Energia Solar</strong><span>Painéis fotovoltaicos convertem a luz solar em electricidade. Pode ser usada tanto para aquecer água como para gerar energia eléctrica. Moçambique tem uma das maiores incidências solares do mundo.</span></div></div>
+        <div class="card-item"><span class="ci">💨</span><div class="ct"><strong>Energia Eólica</strong><span>Turbinas eólicas convertem a energia cinética do vento em electricidade. O potencial é maior em regiões com ventos fortes e constantes.</span></div></div>
+        <div class="card-item"><span class="ci">🌊</span><div class="ct"><strong>Energia Hidroeléctrica</strong><span>Usa a força da água em movimento para gerar electricidade. É a renovável mais utilizada no mundo, embora possa ter impactos ambientais como o desmatamento e alteração de ecossistemas.</span></div></div>
+        <div class="card-item"><span class="ci">🌱</span><div class="ct"><strong>Biomassa</strong><span>Obtida a partir de resíduos orgânicos — madeira, restos de alimentos e lixo. Pode gerar electricidade ou calor e é uma fonte importante em contextos rurais.</span></div></div>
+        <div class="card-item"><span class="ci">🌋</span><div class="ct"><strong>Energia Geotérmica</strong><span>Proveniente do calor interior da Terra. Mais utilizada em regiões com actividade vulcânica intensa, para gerar electricidade ou aquecimento.</span></div></div>
+        <div class="card-item"><span class="ci">🌊</span><div class="ct"><strong>Energia das Marés</strong><span>Usa o movimento das marés e das correntes oceânicas. Tecnologia ainda em desenvolvimento, com enorme potencial energético para países costeiros.</span></div></div>
+      </div>`
+    },
+    {
+      step:'Renováveis vs Não-Renováveis',
+      nar:'A diferença entre fontes renováveis e não renováveis é fundamental. As fontes não renováveis, como o petróleo, o carvão e o gás natural, são finitas e poluentes. São responsáveis pela maior parte das emissões de gases de efeito estufa, contribuindo directamente para as alterações climáticas. As renováveis, pelo contrário, são inesgotáveis e de baixo impacto ambiental.',
+      html:`<p class="section-title">Comparação das fontes de energia</p>
+      <div class="two-col">
+        <div class="col-box" style="background:#d1fae5;border:1.5px solid #6ee7b7">
+          <h4 style="color:#065f46">✅ Renováveis</h4>
+          <ul style="color:#047857">
+            <li><span>☀️</span> Solar</li>
+            <li><span>💨</span> Eólica</li>
+            <li><span>💧</span> Hidroeléctrica</li>
+            <li><span>🌱</span> Biomassa</li>
+            <li><span>🌋</span> Geotérmica</li>
+            <li><span>🌊</span> Marés</li>
+          </ul>
+          <div style="margin-top:10px;background:#a7f3d0;border-radius:6px;padding:7px;font-size:11px;color:#065f46;font-weight:600">Limpas · Inesgotáveis · Sustentáveis</div>
+        </div>
+        <div class="col-box" style="background:#fee2e2;border:1.5px solid #fca5a5">
+          <h4 style="color:#991b1b">⚠️ Não renováveis</h4>
+          <ul style="color:#b91c1c">
+            <li><span>🛢️</span> Petróleo</li>
+            <li><span>⛏️</span> Carvão</li>
+            <li><span>🔥</span> Gás natural</li>
+            <li><span>⚛️</span> Nuclear</li>
+          </ul>
+          <div style="margin-top:10px;background:#fecaca;border-radius:6px;padding:7px;font-size:11px;color:#991b1b;font-weight:600">Poluentes · Finitas · Emitem CO₂</div>
+        </div>
+      </div>
+      <p class="section-title">Impactos das energias não renováveis</p>
+      <div class="card-list">
+        <div class="card-item"><span class="ci">🌡️</span><div class="ct"><strong>Aquecimento global</strong><span>Emissão de CO₂ e CH₄ que aprisionam o calor na atmosfera, causando aumento das temperaturas globais.</span></div></div>
+        <div class="card-item"><span class="ci">🌧️</span><div class="ct"><strong>Chuva ácida</strong><span>Proveniente da queima de combustíveis fósseis que liberta óxidos de enxofre e nitrogénio para a atmosfera.</span></div></div>
+        <div class="card-item"><span class="ci">💨</span><div class="ct"><strong>Poluição do ar e da água</strong><span>Causada pela extracção, transporte e queima dos combustíveis, com graves consequências para a saúde pública.</span></div></div>
+        <div class="card-item"><span class="ci">⛰️</span><div class="ct"><strong>Degradação do solo</strong><span>Em áreas de mineração e perfuração, com consequências a longo prazo para os ecossistemas locais.</span></div></div>
+      </div>`
+    },
+    {
+      step:'Benefícios e Futuro',
+      nar:'Os benefícios das energias renováveis vão muito além da simples produção de electricidade limpa. Promovem a independência energética dos países, criam empregos verdes, estimulam a inovação tecnológica e podem levar energia a comunidades remotas que nunca tiveram acesso à rede eléctrica. Para Moçambique, representam uma oportunidade histórica.',
+      html:`<p class="section-title">Benefícios das energias renováveis</p>
+      <div class="card-list">
+        <div class="card-item"><span class="ci">🌿</span><div class="ct"><strong>Sustentabilidade ambiental</strong><span>Fontes limpas e não poluentes que contribuem para a preservação do meio ambiente e a redução das alterações climáticas.</span></div></div>
+        <div class="card-item"><span class="ci">📉</span><div class="ct"><strong>Redução de gases de efeito estufa</strong><span>Ajudam a diminuir as emissões de CO₂, principal responsável pelo aquecimento global, substituindo os combustíveis fósseis.</span></div></div>
+        <div class="card-item"><span class="ci">💼</span><div class="ct"><strong>Inovação e empregos verdes</strong><span>O sector de renováveis promove desenvolvimento de novas tecnologias e criação de empregos qualificados e sustentáveis.</span></div></div>
+        <div class="card-item"><span class="ci">🔋</span><div class="ct"><strong>Independência energética</strong><span>Países que investem em renováveis reduzem a dependência de importações de energia, aumentando a sua segurança energética.</span></div></div>
+        <div class="card-item"><span class="ci">🏘️</span><div class="ct"><strong>Acessibilidade em zonas remotas</strong><span>Energia solar e eólica podem electrificar comunidades distantes da rede eléctrica de forma mais económica e rápida.</span></div></div>
+      </div>
+      <p class="section-title">Atitudes renováveis no dia a dia</p>
+      <div class="card-list">
+        <div class="card-item"><span class="ci">💡</span><div class="ct"><strong>Usar lâmpadas LED</strong><span>Consomem até 80% menos energia que as incandescentes tradicionais.</span></div></div>
+        <div class="card-item"><span class="ci">🔌</span><div class="ct"><strong>Desligar aparelhos da tomada</strong><span>O modo de espera "standby" consome energia continuamente — desligue completamente.</span></div></div>
+        <div class="card-item"><span class="ci">🌳</span><div class="ct"><strong>Plantar árvores e reciclar</strong><span>Contribuem para a absorção de CO₂ e para a redução do lixo que gera metano nos aterros.</span></div></div>
+      </div>
+      <div class="highlight-box" style="background:#fef3c7;border-left:3px solid #f59e0b;color:#78350f">"Comece por aqui antes de investir — as atitudes diárias têm impacto imediato e não custam nada."</div>`
+    }
+  ]
+},
+{
+  id:'recycle', title:'Reciclagem', sub:'Gestão responsável de resíduos', icon:'♻️',
+  bg:'#d1fae5', tc:'#064e3b',
+  slides:[
+    {
+      step:'Introdução',
+      nar:'A reciclagem é o processo de transformar materiais usados em novos produtos, evitando o desperdício e reduzindo a necessidade de extrair novos recursos naturais. A gestão de resíduos é um dos grandes desafios ambientais do nosso tempo, e cada um de nós tem um papel fundamental neste processo.',
+      html:`<div class="slide-hero" style="background:#d1fae5">
+        <div class="hicon">♻️</div>
+        <h2 style="color:#064e3b">Reciclagem e Gestão de Resíduos</h2>
+        <p style="color:#065f46">Transformar materiais usados em novos produtos, reduzindo o desperdício e preservando os recursos naturais para as gerações futuras.</p>
+      </div>
+      <p class="section-title">Os 3Rs da sustentabilidade</p>
+      <div class="r3-grid">
+        <div class="r3-item" style="background:#dbeafe"><div class="ri">📉</div><h4 style="color:#1e40af">Reduzir</h4><p style="color:#1d4ed8">Evitar gerar lixo — ex: levar garrafa reutilizável</p></div>
+        <div class="r3-item" style="background:#fef3c7"><div class="ri">🔄</div><h4 style="color:#92400e">Reutilizar</h4><p style="color:#b45309">Nova vida a objectos — ex: transformar frascos em recipientes</p></div>
+        <div class="r3-item" style="background:#d1fae5"><div class="ri">♻️</div><h4 style="color:#065f46">Reciclar</h4><p style="color:#047857">Separar correctamente para reaproveitamento</p></div>
+      </div>
+      <div class="highlight-box" style="background:#f0fdf4;border-left:3px solid #22c55e;color:#14532d">"O lixo que jogamos fora não desaparece — ele apenas muda de lugar. Quando o separas correctamente, estás a dar-lhe uma nova vida e a proteger o planeta."</div>`
+    },
+    {
+      step:'Gestão de Resíduos',
+      nar:'A gestão de resíduos é o conjunto de acções e estratégias para lidar com o lixo de forma responsável, desde o momento em que é gerado até ao seu destino final. O objectivo é reduzir os impactos ambientais e proteger a saúde pública. Este processo envolve cinco etapas fundamentais.',
+      html:`<p class="section-title">Conceito e etapas</p>
+      <p class="body-text">A gestão de resíduos envolve todas as etapas, desde a produção, recolha, transporte, tratamento e eliminação de resíduos, de forma a minimizar os impactos ambientais e proteger a saúde humana.</p>
+      <div class="steps-list">
+        <div class="step-item"><div class="step-num">1</div><div class="st"><strong>Geração</strong><span>Produção de resíduos no dia a dia — doméstico, industrial, hospitalar, comercial e outros.</span></div></div>
+        <div class="step-item"><div class="step-num">2</div><div class="st"><strong>Segregação e separação</strong><span>Separar o lixo por tipo — reciclável, orgânico, perigoso — na fonte de geração.</span></div></div>
+        <div class="step-item"><div class="step-num">3</div><div class="st"><strong>Recolha e transporte</strong><span>Realizado por empresas ou autoridades municipais, levando os resíduos para tratamento.</span></div></div>
+        <div class="step-item"><div class="step-num">4</div><div class="st"><strong>Tratamento</strong><span>Reciclagem, compostagem, incineração controlada ou outros processos de valorização.</span></div></div>
+        <div class="step-item"><div class="step-num">5</div><div class="st"><strong>Disposição final</strong><span>Deposição do rejeito — o que não pode ser reciclado — em aterros sanitários controlados.</span></div></div>
+      </div>
+      <div class="highlight-box" style="background:#f0fdf4;border-left:3px solid #22c55e;color:#14532d">Gestão de resíduos eficiente = menos poluição + mais recursos reaproveitados + comunidades mais saudáveis.</div>`
+    },
+    {
+      step:'Cores e Separação',
+      nar:'O sistema de cores para separação do lixo ajuda a identificar para onde cada tipo de material deve ir. O contentor azul é para papel e cartão. O verde para vidro. O amarelo para plástico e metal. O cinza para o lixo indiferenciado. Os resíduos orgânicos podem ser usados para compostagem. E os resíduos perigosos precisam de pontos de recolha especiais.',
+      html:`<p class="section-title">Sistema de cores — separação do lixo</p>
+      <div class="color-chips">
+        <div class="chip" style="background:#dbeafe"><div class="cbig">📦</div><h4 style="color:#1e40af">Azul</h4><p style="color:#1d4ed8">Papel e cartão limpo, jornais, revistas, caixas</p></div>
+        <div class="chip" style="background:#d1fae5"><div class="cbig">🍶</div><h4 style="color:#065f46">Verde</h4><p style="color:#047857">Garrafas e frascos de vidro</p></div>
+        <div class="chip" style="background:#fef9c3"><div class="cbig">🥤</div><h4 style="color:#854d0e">Amarelo</h4><p style="color:#a16207">Plástico, embalagens, latas de metal</p></div>
+        <div class="chip" style="background:#f3f4f6"><div class="cbig">🗑️</div><h4 style="color:#374151">Cinza</h4><p style="color:#6b7280">Indiferenciado — o que não se recicla</p></div>
+        <div class="chip" style="background:#fed7aa"><div class="cbig">🍂</div><h4 style="color:#9a3412">Orgânico</h4><p style="color:#c2410c">Restos de comida, cascas, borra de café</p></div>
+        <div class="chip" style="background:#fee2e2"><div class="cbig">⚠️</div><h4 style="color:#991b1b">Perigoso</h4><p style="color:#b91c1c">Pilhas, medicamentos, óleos, tintas</p></div>
+      </div>
+      <p class="section-title">Compostagem</p>
+      <p class="body-text">A compostagem é o processo de transformar resíduos orgânicos — restos de alimentos, cascas de fruta, borra de café, folhas — em adubo natural. Reduz os resíduos enviados para aterro, enriquece o solo e promove a economia circular.</p>
+      <div class="card-list">
+        <div class="card-item"><span class="ci">✅</span><div class="ct"><strong>O que compostar</strong><span>Cascas de legumes e fruta, restos de comida, borra de café, folhas secas, ervas</span></div></div>
+        <div class="card-item"><span class="ci">❌</span><div class="ct"><strong>O que não compostar</strong><span>Carne, peixe, produtos lácteos, óleos, plásticos, metais, vidro</span></div></div>
+      </div>`
+    },
+    {
+      step:'Impacto e Importância',
+      nar:'Os benefícios da reciclagem e da boa gestão de resíduos são imensos. Reciclar uma tonelada de papel salva 17 árvores. Uma garrafa de vidro reciclada economiza energia suficiente para iluminar uma lâmpada durante 4 horas. Menos lixo em decomposição significa menos emissões de metano, um gás 25 vezes mais poluente que o dióxido de carbono.',
+      html:`<p class="section-title">Por que a reciclagem é tão importante?</p>
+      <div class="card-list">
+        <div class="card-item"><span class="ci">🌍</span><div class="ct"><strong>1. Protecção ambiental</strong><span>Reduz a poluição do solo, do ar e da água — e diminui a quantidade de lixo enviada para aterros e oceanos.</span></div></div>
+        <div class="card-item"><span class="ci">🌳</span><div class="ct"><strong>2. Conservação de recursos naturais</strong><span>Reciclar 1 tonelada de papel salva 17 árvores. Reciclar vidro poupa energia equivalente a 4 horas de iluminação por garrafa.</span></div></div>
+        <div class="card-item"><span class="ci">🌡️</span><div class="ct"><strong>3. Redução de gases de efeito estufa</strong><span>Menos lixo em decomposição = menos emissões de metano (CH₄), um gás 25× mais poluente que o CO₂.</span></div></div>
+        <div class="card-item"><span class="ci">💼</span><div class="ct"><strong>4. Benefício económico e social</strong><span>Cria empregos em cooperativas e empresas de reciclagem. Promove a economia circular onde os resíduos se tornam novos recursos.</span></div></div>
+        <div class="card-item"><span class="ci">🎓</span><div class="ct"><strong>5. Educação e cidadania ambiental</strong><span>Quem aprende a separar o lixo desenvolve consciência ecológica e passa a agir de forma mais responsável em todas as áreas da vida.</span></div></div>
+      </div>
+      <p class="section-title">Iniciativas práticas</p>
+      <div class="card-list">
+        <div class="card-item"><span class="ci">📄</span><div class="ct"><strong>Campanha "Dias sem papel"</strong><span>Reduzir o uso de papel no escritório, apostando em documentação digital.</span></div></div>
+        <div class="card-item"><span class="ci">♻️</span><div class="ct"><strong>Campanha dos 3Rs</strong><span>Reduzir, Reutilizar e Reciclar — promover estes princípios no local de trabalho e em casa.</span></div></div>
+      </div>`
+    }
+  ]
+},
+{
+  id:'gas', title:'Carvão vs Gás', sub:'Escolha mais económica e limpa', icon:'🔥',
+  bg:'#ede9fe', tc:'#3b0764',
+  slides:[
+    {
+      step:'Introdução',
+      nar:'Em Moçambique, a maioria das famílias ainda cozinha com carvão vegetal, apesar de o país ser um importante produtor de gás natural. A escolha do combustível doméstico tem impacto directo no custo de vida, na saúde pública, no ambiente e na sustentabilidade energética do país.',
+      html:`<div class="slide-hero" style="background:#ede9fe">
+        <div class="hicon">🔥</div>
+        <h2 style="color:#3b0764">Carvão vs Gás de Cozinha</h2>
+        <p style="color:#4c1d95">A escolha do combustível doméstico afecta directamente o orçamento familiar, a saúde e o ambiente. Vamos comparar os dois.</p>
+      </div>
+      <p class="body-text">Moçambique possui vastas reservas de gás natural e é um dos maiores produtores africanos, mas a maioria das famílias urbanas e rurais continua a usar carvão vegetal para cozinhar. Esta realidade tem custos económicos, de saúde e ambientais significativos.</p>
+      <p class="section-title">Contexto actual</p>
+      <div class="card-list">
+        <div class="card-item"><span class="ci">🪵</span><div class="ct"><strong>Carvão vegetal — combustível dominante</strong><span>Ainda utilizado pela maioria das famílias moçambicanas para cozinhar, apesar dos custos crescentes e dos impactos negativos.</span></div></div>
+        <div class="card-item"><span class="ci">🔵</span><div class="ct"><strong>Gás GPL — alternativa disponível</strong><span>Gás de Petróleo Liquefeito disponível em contexto urbano. Custo mensal competitivo com o carvão, com múltiplas vantagens.</span></div></div>
+      </div>`
+    },
+    {
+      step:'Comparação de Custos',
+      nar:'A comparação directa entre o carvão e o gás GPL revela dados surpreendentes. O custo mensal do carvão ultrapassa frequentemente 1.000 meticais, enquanto o gás mantém um custo médio de cerca de 950 meticais. O custo diário com carvão é de aproximadamente 40 meticais, contra 32 meticais com gás. E o gás dura em média 30 dias ou mais, enquanto um saco de carvão dura apenas 15 a 25 dias.',
+      html:`<p class="section-title">Indicadores chave de desempenho</p>
+      <div class="kpi-row">
+        <div class="kpi red"><div class="knum">+1.000 MT</div><div class="klbl">Custo mensal carvão</div></div>
+        <div class="kpi green"><div class="knum">≈950 MT</div><div class="klbl">Custo mensal GPL</div></div>
+        <div class="kpi purple"><div class="knum">~20%</div><div class="klbl">Poupança potencial</div></div>
+      </div>
+      <div class="kpi-row">
+        <div class="kpi red"><div class="knum">≈40 MT</div><div class="klbl">Custo diário carvão</div></div>
+        <div class="kpi green"><div class="knum">≈32 MT</div><div class="klbl">Custo diário GPL</div></div>
+        <div class="kpi purple"><div class="knum">8 MT</div><div class="klbl">Poupança diária</div></div>
+      </div>
+      <p class="section-title">Duração e eficiência</p>
+      <div class="two-col">
+        <div class="col-box" style="background:#fee2e2">
+          <h4 style="color:#991b1b">🪵 Carvão</h4>
+          <ul style="color:#b91c1c">
+            <li><span>⏱️</span> Dura 15–25 dias</li>
+            <li><span>📉</span> Baixa eficiência energética</li>
+            <li><span>🔥</span> Calor mal distribuído</li>
+            <li><span>🧯</span> Difícil de regular</li>
+          </ul>
+        </div>
+        <div class="col-box" style="background:#d1fae5;border:1.5px solid #6ee7b7">
+          <h4 style="color:#065f46">🔵 GPL</h4>
+          <ul style="color:#047857">
+            <li><span>⏱️</span> Dura 30+ dias</li>
+            <li><span>📈</span> Alta eficiência energética</li>
+            <li><span>🔥</span> Calor uniforme e rápido</li>
+            <li><span>🎛️</span> Fácil de regular</li>
+          </ul>
+        </div>
+      </div>`
+    },
+    {
+      step:'Saúde e Ambiente',
+      nar:'O carvão vegetal tem impactos graves na saúde. A queima em espaços fechados produz fumo com partículas finas e monóxido de carbono que causam doenças respiratórias crónicas, especialmente em crianças e idosos. A nível ambiental, o uso massivo de carvão contribui directamente para a desflorestação acelerada de Moçambique.',
+      html:`<p class="section-title">Impacto na saúde</p>
+      <div class="card-list">
+        <div class="card-item"><span class="ci">😮‍💨</span><div class="ct"><strong>Fumo e partículas finas (PM2.5)</strong><span>A queima de carvão em espaços fechados produz partículas que penetram profundamente nos pulmões, causando infecções respiratórias, asma e doenças crónicas.</span></div></div>
+        <div class="card-item"><span class="ci">👶</span><div class="ct"><strong>Crianças e idosos em maior risco</strong><span>Os grupos mais vulneráveis sofrem desproporcionalmente com a exposição ao fumo doméstico, com impacto no desenvolvimento pulmonar das crianças.</span></div></div>
+        <div class="card-item"><span class="ci">✅</span><div class="ct"><strong>GPL reduz drasticamente a poluição</strong><span>Combustão limpa com muito menos emissões de partículas, CO e compostos tóxicos — ambiente doméstico significativamente mais saudável.</span></div></div>
+      </div>
+      <p class="section-title">Impacto ambiental</p>
+      <div class="card-list">
+        <div class="card-item"><span class="ci">🌲</span><div class="ct"><strong>Desflorestação acelerada</strong><span>A produção de carvão vegetal é uma das principais causas de desflorestação em Moçambique, destruindo habitats e reduzindo a capacidade de absorção de CO₂.</span></div></div>
+        <div class="card-item"><span class="ci">🌡️</span><div class="ct"><strong>Emissões de carbono</strong><span>A queima de carvão emite mais CO₂ por unidade de energia produzida do que o GPL, contribuindo mais para as alterações climáticas.</span></div></div>
+        <div class="card-item"><span class="ci">🔵</span><div class="ct"><strong>GPL — escolha mais sustentável</strong><span>Menos emissões, sem desflorestação associada e compatível com os objectivos de transição energética de Moçambique.</span></div></div>
+      </div>`
+    },
+    {
+      step:'Barreiras e Conclusão',
+      nar:'Apesar das vantagens evidentes do gás, existem barreiras reais à sua adopção. O custo inicial do equipamento — fogão e botija — é a principal barreira. Seguem-se a percepção de risco e os hábitos culturais enraizados. No entanto, o custo mensal do gás não é a principal limitação — é comparável ou inferior ao do carvão. A mudança é possível e vantajosa.',
+      html:`<p class="section-title">Barreiras à adopção do GPL</p>
+      <div class="card-list">
+        <div class="card-item"><span class="ci">💸</span><div class="ct"><strong>Custo inicial do equipamento</strong><span>Comprar fogão a gás e botija requer investimento inicial — mas recupera-se em poucos meses através da poupança mensal.</span></div></div>
+        <div class="card-item"><span class="ci">😨</span><div class="ct"><strong>Percepção de risco</strong><span>Muitas famílias têm receio de usar gás em casa. Com uso correcto e equipamento certificado, o GPL é seguro.</span></div></div>
+        <div class="card-item"><span class="ci">🏘️</span><div class="ct"><strong>Hábitos culturais</strong><span>O carvão faz parte da rotina de muitas gerações. A mudança de comportamento leva tempo e requer informação e sensibilização.</span></div></div>
+        <div class="card-item"><span class="ci">📦</span><div class="ct"><strong>Disponibilidade e distribuição</strong><span>Em zonas rurais, a distribuição de GPL ainda é limitada, tornando o carvão a opção mais acessível localmente.</span></div></div>
+      </div>
+      <p class="section-title">Conclusão</p>
+      <p class="body-text">O gás de cozinha GPL apresenta-se como uma alternativa <strong>viável, económica e sustentável</strong> ao carvão vegetal em Moçambique, alinhando-se com os objectivos de:</p>
+      <div class="r3-grid">
+        <div class="r3-item" style="background:#d1fae5"><div class="ri">💰</div><h4 style="color:#065f46">Poupança</h4><p style="color:#047857">Custo mensal inferior ao carvão</p></div>
+        <div class="r3-item" style="background:#dbeafe"><div class="ri">❤️</div><h4 style="color:#1e40af">Saúde</h4><p style="color:#1d4ed8">Menos fumo, ar mais limpo</p></div>
+        <div class="r3-item" style="background:#ede9fe"><div class="ri">🌿</div><h4 style="color:#4c1d95">Ambiente</h4><p style="color:#6d28d9">Menos desflorestação</p></div>
+      </div>
+      <div class="highlight-box" style="background:#ede9fe;border-left:3px solid #7c3aed;color:#3b0764">"A transição energética começa em casa — a escolha do combustível é também uma escolha pelo futuro."</div>`
+    }
+  ]
+}
+];
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let curMod = null, curSlide = 0, completed = new Set();
+let synth = window.speechSynthesis;
+let voices = [], speaking = false;
+
+function loadVoices(){
+  voices = synth.getVoices();
+}
+if(synth.onvoiceschanged !== undefined) synth.onvoiceschanged = loadVoices;
+loadVoices();
+
+function getBestPTVoice(){
+  const pt = voices.filter(v=>v.lang.startsWith('pt'));
+  return pt.find(v=>v.lang==='pt-PT') || pt.find(v=>v.name.toLowerCase().includes('portugal')) || pt[0] || voices[0];
+}
+
+function speak(text){
+  if(!synth) return;
+  synth.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  const v = getBestPTVoice();
+  if(v) utt.voice = v;
+  utt.lang = 'pt-PT';
+  utt.rate = 0.92;
+  utt.pitch = 1;
+  utt.onstart = ()=>{ speaking=true; updateNarBtn(); };
+  utt.onend = ()=>{ speaking=false; updateNarBtn(); };
+  utt.onerror = ()=>{ speaking=false; updateNarBtn(); };
+  synth.speak(utt);
+}
+
+function toggleNarration(){
+  if(speaking){ synth.cancel(); speaking=false; updateNarBtn(); return; }
+  const m = MODULES[curMod];
+  speak(m.slides[curSlide].nar);
+}
+
+function updateNarBtn(){
+  const btn = document.getElementById('narBtn');
+  if(!btn) return;
+  if(speaking){
+    btn.innerHTML=`<svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#fff"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
+  } else {
+    btn.innerHTML=`<svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#fff"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>`;
+  }
+}
+
+// ─── RENDER ──────────────────────────────────────────────────────────────────
+function init(){
+  renderPills(); renderMenu();
+}
+
+function renderPills(){
+  const el = document.getElementById('pills');
+  el.innerHTML = MODULES.map((_,i)=>`<div class="pill ${completed.has(i)?'done':i===curMod?'cur':''}" ></div>`).join('');
+  document.getElementById('progFill').style.width = (completed.size/MODULES.length*100)+'%';
+}
+
+function renderMenu(){
+  document.getElementById('modGrid').innerHTML = MODULES.map((m,i)=>{
+    const done = completed.has(i);
+    return `<div class="mod-card" style="background:${m.bg};color:${m.tc}" onclick="startMod(${i})">
+      <div class="micon">${m.icon}</div>
+      <h3>${m.title}</h3>
+      <p>${m.sub}</p>
+      <span class="mod-badge ${done?'done':''}">${done?'✓ Concluído':'Iniciar →'}</span>
+    </div>`;
+  }).join('');
+}
+
+function startMod(idx){
+  if(synth) synth.cancel();
+  curMod=idx; curSlide=0;
+  document.getElementById('homeView').style.display='none';
+  document.getElementById('slideView').classList.add('on');
+  document.getElementById('shTitle').textContent = MODULES[idx].title;
+  renderSlide();
+}
+
+function goHome(){
+  if(synth) synth.cancel();
+  speaking=false;
+  document.getElementById('homeView').style.display='block';
+  document.getElementById('slideView').classList.remove('on');
+  renderPills(); renderMenu();
+}
+
+function navigate(dir){
+  if(synth) synth.cancel(); speaking=false;
+  const total = MODULES[curMod].slides.length;
+  if(dir===1 && curSlide===total-1){ completed.add(curMod); showDone(); return; }
+  if(dir===-1 && curSlide===0){ goHome(); return; }
+  curSlide = Math.max(0, Math.min(total-1, curSlide+dir));
+  renderSlide();
+}
+
+function renderSlide(){
+  const m = MODULES[curMod];
+  const s = m.slides[curSlide];
+  const total = m.slides.length;
+  document.getElementById('shStep').textContent = s.step;
+  document.getElementById('shCount').textContent = `${curSlide+1} / ${total}`;
+  document.getElementById('nextBtn').textContent = curSlide===total-1 ? 'Concluir ✓' : 'Próximo →';
+  document.getElementById('prevBtn').disabled = false;
+  document.getElementById('narText').textContent = s.nar;
+  document.getElementById('slideContent').innerHTML = s.html;
+  updateNarBtn();
+  renderPills();
+  // auto-play narration
+  setTimeout(()=>speak(s.nar), 400);
+}
+
+function showDone(){
+  if(synth) synth.cancel(); speaking=false;
+  const m = MODULES[curMod];
+  document.getElementById('slideContent').innerHTML=`<div class="done-screen">
+    <div class="done-circle">✓</div>
+    <h2>Módulo concluído!</h2>
+    <p>Completaste o módulo <strong>${m.title}</strong>. O conhecimento adquirido ajuda-te a ser parte da solução para um Moçambique mais sustentável.</p>
+    <button class="home-btn" onclick="goHome()">← Ver todos os módulos</button>
+  </div>`;
+  document.getElementById('narBar').style.display='none';
+  document.getElementById('prevBtn').disabled=true;
+  document.getElementById('nextBtn').disabled=true;
+  renderPills();
+  speak('Parabéns! Completaste este módulo com sucesso. O teu conhecimento é uma ferramenta poderosa para um Moçambique mais sustentável.');
+}
+
+init();
+</script>
+</body>
+</html>
