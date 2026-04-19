@@ -5,222 +5,567 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>EduGalp</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Nunito+Sans:wght@400;600&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f1923;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:12px}
-#app{width:100%;max-width:420px;min-height:680px;border-radius:28px;overflow:hidden;background:#fff;box-shadow:0 30px 80px rgba(0,0,0,.5)}
-#home{background:#0f1923;min-height:680px;display:flex;flex-direction:column}
-.home-header{padding:40px 28px 20px}
-.home-tag{font-size:11px;font-weight:700;letter-spacing:2px;color:#7ee8a2;text-transform:uppercase;margin-bottom:10px}
-.home-title{font-size:32px;font-weight:800;color:#fff;line-height:1.15;margin-bottom:8px}
-.home-sub{font-size:14px;color:rgba(255,255,255,.45);line-height:1.5}
-.mod-list{display:flex;flex-direction:column;gap:12px;padding:8px 20px 32px}
-.mod-card{border-radius:20px;padding:22px 20px;cursor:pointer;display:flex;align-items:center;gap:16px;transition:transform .18s;position:relative;overflow:hidden}
-.mod-card:active{transform:scale(.97)}
-.card-icon{font-size:36px;flex-shrink:0;animation:float 3s ease-in-out infinite}
-.mod-card h3{font-size:16px;font-weight:800;margin-bottom:3px}
-.mod-card p{font-size:12px;opacity:.7;line-height:1.3}
-.mod-arrow{margin-left:auto;font-size:22px;flex-shrink:0;opacity:.6}
-.done-badge{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.25);border-radius:99px;padding:3px 10px;font-size:10px;font-weight:700}
-.wc{background:linear-gradient(135deg,#0ea5e9,#0369a1);color:#fff}
-.ec{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
-.rc{background:linear-gradient(135deg,#22c55e,#15803d);color:#fff}
-.gc{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff}
-#slideView{display:none;flex-direction:column;min-height:680px;background:#fff}
-#slideView.on{display:flex}
-.sbar{display:flex;align-items:center;gap:10px;padding:16px 18px 10px}
-.sback{background:none;border:none;font-size:24px;cursor:pointer;padding:0;line-height:1;color:#111}
-.smod-title{font-size:13px;font-weight:700;color:#111;flex:1}
-.spills{display:flex;gap:5px}
-.spill{height:5px;border-radius:3px;background:#e5e7eb;transition:.35s;flex:1;min-width:16px}
-.spill.done{background:#22c55e}
-.spill.cur{background:#111}
-.play-bar{margin:0 18px 12px;border-radius:14px;background:#111;display:flex;align-items:center;gap:12px;padding:11px 14px;cursor:pointer;user-select:none}
-.play-bar:active{opacity:.8}
-.play-ico{width:38px;height:38px;border-radius:10px;background:#7ee8a2;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.play-ico svg{width:18px;height:18px;fill:#0f1923}
-.play-meta{flex:1}
-.play-lbl{font-size:10px;font-weight:700;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.8px}
-.play-status{font-size:13px;font-weight:700;color:#fff}
-.play-wave{display:flex;align-items:center;gap:3px;height:20px}
-.play-wave.off{display:none}
-.pw{display:block;width:3px;border-radius:2px;background:#7ee8a2;animation:wv .8s ease-in-out infinite;transform-origin:bottom;height:4px}
-.pw:nth-child(2){animation-delay:.1s;height:10px}
-.pw:nth-child(3){animation-delay:.2s;height:16px}
-.pw:nth-child(4){animation-delay:.15s;height:8px}
-.pw:nth-child(5){animation-delay:.05s;height:14px}
-.slide-stage{flex:1;overflow:hidden;position:relative}
-.slide{position:absolute;inset:0;padding:0 18px 16px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;opacity:0;transform:translateX(60px);transition:opacity .3s,transform .3s;pointer-events:none}
-.slide.in{opacity:1;transform:translateX(0);pointer-events:all}
-.slide.out{opacity:0;transform:translateX(-60px)}
-.hero{border-radius:22px;padding:28px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px}
-.hbig{font-size:60px;animation:pop .5s cubic-bezier(.175,.885,.32,1.275) both}
-.hero h2{font-size:21px;font-weight:800;line-height:1.2}
-.hero p{font-size:13px;line-height:1.6;opacity:.75;max-width:280px}
-.scards{display:grid;gap:10px}
-.scards.c2{grid-template-columns:1fr 1fr}
-.scards.c3{grid-template-columns:1fr 1fr 1fr}
-.sc{border-radius:16px;padding:14px 10px;text-align:center}
-.sc .sn{font-size:28px;font-weight:900;line-height:1;margin-bottom:3px}
-.sc .sl{font-size:11px;font-weight:500;line-height:1.3;opacity:.75}
-.sc.bl{background:#dbeafe;color:#1e3a8a}.sc.bl .sn{color:#1d4ed8}
-.sc.rd{background:#fee2e2;color:#7f1d1d}.sc.rd .sn{color:#dc2626}
-.sc.gn{background:#dcfce7;color:#14532d}.sc.gn .sn{color:#16a34a}
-.sc.am{background:#fef3c7;color:#78350f}.sc.am .sn{color:#d97706}
-.sc.pu{background:#f3e8ff;color:#3b0764}.sc.pu .sn{color:#9333ea}
-.sc.dk{background:#111;color:#fff}.sc.dk .sn{color:#7ee8a2}
-.fact{border-radius:14px;padding:13px 14px;display:flex;align-items:flex-start;gap:11px}
-.fact .fi{font-size:22px;flex-shrink:0;margin-top:1px}
-.fact .fb strong{display:block;font-size:13px;font-weight:700;margin-bottom:2px}
-.fact .fb span{font-size:12px;line-height:1.5;opacity:.7}
-.fact.lt{background:#f9fafb;border:1px solid #f3f4f6}
-.fact.bl{background:#eff6ff;border:1px solid #bfdbfe}
-.fact.gn{background:#f0fdf4;border:1px solid #bbf7d0}
-.fact.am{background:#fffbeb;border:1px solid #fde68a}
-.fact.rd{background:#fff1f2;border:1px solid #fecdd3}
-.fact.pu{background:#faf5ff;border:1px solid #e9d5ff}
-.versus{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:start}
-.vc{border-radius:14px;padding:13px 11px}
-.vc h4{font-size:12px;font-weight:800;margin-bottom:9px}
-.vc ul{list-style:none;display:flex;flex-direction:column;gap:5px}
-.vc ul li{font-size:11px;display:flex;gap:5px;line-height:1.3}
-.vbad{background:#fff1f2;border:1px solid #fecdd3}
-.vgood{background:#f0fdf4;border:1px solid #bbf7d0}
-.vmid{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#6b7280;padding-top:30px}
-.steps{display:flex;flex-direction:column}
-.sr{display:flex;gap:11px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f3f4f6}
-.sr:last-child{border:none}
-.snum{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;color:#fff;margin-top:1px}
-.sr .st strong{font-size:13px;font-weight:700;display:block;margin-bottom:2px}
-.sr .st span{font-size:12px;color:#6b7280;line-height:1.4}
-.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.chip{border-radius:14px;padding:11px 8px;text-align:center;border:1px solid rgba(0,0,0,.06)}
-.chip .ci{font-size:22px;margin-bottom:5px}
-.chip h4{font-size:11px;font-weight:700;margin-bottom:2px}
-.chip p{font-size:10px;opacity:.65;line-height:1.3}
-.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+:root{--bg:#0d1117;--card:#161b22;--green:#3ddc84;--white:#f0f6fc}
+body{font-family:'Nunito Sans',sans-serif;background:var(--bg);min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#shell{width:100vw;max-width:430px;height:100dvh;max-height:780px;display:flex;flex-direction:column;overflow:hidden;position:relative}
+
+/* ── HOME ──────────────────────────── */
+#home{flex:1;display:flex;flex-direction:column;overflow-y:auto;padding:40px 22px 30px}
+.home-eyebrow{font-family:'Nunito',sans-serif;font-size:11px;font-weight:900;letter-spacing:3px;color:var(--green);text-transform:uppercase;margin-bottom:14px}
+.home-h1{font-family:'Nunito',sans-serif;font-size:38px;font-weight:900;color:var(--white);line-height:1.1;margin-bottom:8px}
+.home-sub{font-size:14px;color:#8b949e;line-height:1.6;margin-bottom:32px}
+.mod-grid{display:flex;flex-direction:column;gap:12px}
+.mc{border-radius:20px;padding:20px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:transform .15s,filter .15s;position:relative;overflow:hidden}
+.mc:active{transform:scale(.97)}
+.mc .mico{font-size:32px;animation:bob 3s ease-in-out infinite}
+.mc-text h3{font-family:'Nunito',sans-serif;font-size:15px;font-weight:900;margin-bottom:2px}
+.mc-text p{font-size:12px;opacity:.7;line-height:1.3}
+.mc .mchev{margin-left:auto;font-size:20px;opacity:.5;flex-shrink:0}
+.mc.done .mchev{color:var(--green);opacity:1}
+.mc.w{background:linear-gradient(130deg,#1e6eb5,#0e4a8a);color:#dbeafe}
+.mc.e{background:linear-gradient(130deg,#c47f0a,#8a5500);color:#fef3c7}
+.mc.r{background:linear-gradient(130deg,#1a7a3c,#0d5228);color:#d1fae5}
+.mc.g{background:linear-gradient(130deg,#7c2db5,#4e1880);color:#f3e8ff}
+
+/* ── PLAYER ────────────────────────── */
+#player{display:none;flex:1;flex-direction:column;overflow:hidden}
+#player.on{display:flex}
+.pbar{display:flex;align-items:center;gap:10px;padding:14px 18px 10px;flex-shrink:0}
+.pbk{background:none;border:none;font-size:22px;cursor:pointer;color:var(--white);padding:0;line-height:1}
+.ptitle{font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;color:var(--white);flex:1}
+.pdots{display:flex;gap:5px}
+.pdot{height:4px;border-radius:2px;background:rgba(255,255,255,0.18);transition:.35s;flex:1;min-width:12px}
+.pdot.done{background:var(--green)}
+.pdot.cur{background:#fff}
+
+/* ── STORY STAGE ────────────────────── */
+.stage{flex:1;overflow:hidden;position:relative;display:flex;align-items:stretch}
+.scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:10px 18px 0;gap:10px;opacity:0;transform:translateY(30px);transition:opacity .4s,transform .4s;pointer-events:none;overflow-y:auto}
+.scene.in{opacity:1;transform:translateY(0);pointer-events:all}
+.scene.out{opacity:0;transform:translateY(-30px)}
+
+/* Scene elements — start hidden, animate in via JS */
+.se{opacity:0;transform:translateY(20px);transition:opacity .4s ease, transform .4s ease}
+.se.show{opacity:1;transform:translateY(0)}
+
+/* BIG ICON HERO */
+.big-icon{font-size:80px;text-align:center;line-height:1}
+.hero-label{font-family:'Nunito',sans-serif;font-size:26px;font-weight:900;color:var(--white);text-align:center;line-height:1.2}
+.hero-sub{font-size:14px;color:#8b949e;text-align:center;line-height:1.6;max-width:280px}
+
+/* STAT BUBBLE */
+.bubble-row{display:flex;gap:10px;width:100%;justify-content:center;flex-wrap:wrap}
+.bubble{border-radius:18px;padding:14px 16px;text-align:center;flex:1;min-width:90px;max-width:130px}
+.bubble .bnum{font-family:'Nunito',sans-serif;font-size:28px;font-weight:900;line-height:1;margin-bottom:2px}
+.bubble .blbl{font-size:11px;font-weight:600;line-height:1.3;opacity:.8}
+.bubble.bl{background:#1e3a5f;color:#93c5fd}.bubble.bl .bnum{color:#60a5fa}
+.bubble.rd{background:#4a1515;color:#fca5a5}.bubble.rd .bnum{color:#f87171}
+.bubble.gn{background:#14412a;color:#6ee7b7}.bubble.gn .bnum{color:#34d399}
+.bubble.am{background:#4a2d00;color:#fcd34d}.bubble.am .bnum{color:#fbbf24}
+.bubble.pu{background:#2d1a4a;color:#c4b5fd}.bubble.pu .bnum{color:#a78bfa}
+.bubble.wh{background:#1c2128;color:#e6edf3}.bubble.wh .bnum{color:var(--green)}
+
+/* FACT PILL */
+.fact-pill{width:100%;border-radius:16px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px}
+.fact-pill .fp-ico{font-size:26px;flex-shrink:0}
+.fact-pill .fp-txt strong{display:block;font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;color:var(--white);margin-bottom:2px}
+.fact-pill .fp-txt span{font-size:12px;color:#8b949e;line-height:1.5}
+.fact-pill.bl{background:#0d1f35;border:1px solid #1e3a5f}
+.fact-pill.gn{background:#0a2419;border:1px solid #14412a}
+.fact-pill.am{background:#1e1400;border:1px solid #4a2d00}
+.fact-pill.rd{background:#1e0a0a;border:1px solid #4a1515}
+.fact-pill.pu{background:#12091e;border:1px solid #2d1a4a}
+
+/* VERSUS */
+.vs-wrap{width:100%;display:grid;grid-template-columns:1fr 32px 1fr;gap:6px;align-items:start}
+.vs-col{border-radius:14px;padding:12px}
+.vs-col h4{font-family:'Nunito',sans-serif;font-size:12px;font-weight:900;margin-bottom:8px}
+.vs-col ul{list-style:none;display:flex;flex-direction:column;gap:4px}
+.vs-col ul li{font-size:11px;line-height:1.35;display:flex;gap:5px}
+.vs-bad{background:#1e0a0a;border:1px solid #4a1515}
+.vs-good{background:#0a2419;border:1px solid #14412a}
+.vs-mid{display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:12px;font-weight:900;color:#484f58;padding-top:28px}
+
+/* STEPS */
+.steps-wrap{width:100%;display:flex;flex-direction:column}
+.srow{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.srow:last-child{border:none}
+.srow .snum{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-size:11px;font-weight:900;flex-shrink:0;color:#0d1117;margin-top:1px}
+.srow .stxt strong{font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--white);display:block;margin-bottom:2px}
+.srow .stxt span{font-size:12px;color:#8b949e;line-height:1.4}
+
+/* CHIP GRID */
+.chips{width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.chip{border-radius:14px;padding:12px 8px;text-align:center;border:1px solid rgba(255,255,255,.07)}
+.chip .cico{font-size:22px;margin-bottom:5px}
+.chip h4{font-family:'Nunito',sans-serif;font-size:11px;font-weight:900;margin-bottom:2px}
+.chip p{font-size:10px;color:#8b949e;line-height:1.3}
+
+/* TRIO */
+.trio{width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .ti{border-radius:14px;padding:13px 10px;text-align:center}
-.ti .tico{font-size:26px;margin-bottom:6px}
-.ti h4{font-size:11px;font-weight:800;margin-bottom:3px}
-.ti p{font-size:10px;opacity:.7;line-height:1.3}
-.qlbl{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#9ca3af;margin-bottom:-2px}
-.qt{border-radius:14px;padding:14px 16px;font-size:13px;font-style:italic;line-height:1.7}
-.snav{display:flex;gap:10px;padding:10px 18px 18px}
-.nb{flex:1;padding:14px;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:.15s}
-.nb.p{background:#111;color:#fff}.nb.p:active{background:#333}
-.nb.s{background:#f3f4f6;color:#374151}.nb.s:active{background:#e5e7eb}
+.ti .tico{font-size:26px;margin-bottom:5px}
+.ti h4{font-family:'Nunito',sans-serif;font-size:11px;font-weight:800;margin-bottom:2px}
+.ti p{font-size:10px;opacity:.65;line-height:1.3}
+
+/* QUOTE */
+.qt{width:100%;border-radius:14px;padding:14px 16px;font-size:13px;font-style:italic;color:#8b949e;line-height:1.7;border-left:3px solid var(--green)}
+
+/* ── NARRATION BAR ──────────────────── */
+.nar-bar{flex-shrink:0;margin:8px 18px 6px;border-radius:16px;background:#161b22;border:1px solid #30363d;display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;user-select:none;transition:border-color .2s}
+.nar-bar:active{border-color:var(--green)}
+.nar-bar.playing{border-color:var(--green)}
+.nar-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#21262d}
+.nar-ico svg{width:16px;height:16px;fill:var(--green)}
+.nar-meta{flex:1;min-width:0}
+.nar-lbl{font-size:10px;font-weight:700;color:#484f58;text-transform:uppercase;letter-spacing:.8px}
+.nar-status{font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nar-wave{display:flex;align-items:center;gap:2px;height:18px;flex-shrink:0}
+.nar-wave.off{display:none}
+.nw{display:block;width:3px;border-radius:2px;background:var(--green);animation:wv .7s ease-in-out infinite;transform-origin:bottom;height:4px}
+.nw:nth-child(2){animation-delay:.1s;height:10px}
+.nw:nth-child(3){animation-delay:.2s;height:16px}
+.nw:nth-child(4){animation-delay:.15s;height:8px}
+.nw:nth-child(5){animation-delay:.05s;height:13px}
+
+/* ── NAV ────────────────────────────── */
+.pnav{display:flex;gap:10px;padding:8px 18px 16px;flex-shrink:0}
+.nb{flex:1;padding:14px;border-radius:14px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;cursor:pointer;border:none;transition:.15s}
+.nb.p{background:var(--green);color:#0d1117}
+.nb.p:active{filter:brightness(.9)}
+.nb.s{background:#21262d;color:var(--white);border:1px solid #30363d}
+.nb.s:active{background:#2d333b}
 .nb:disabled{opacity:.3;cursor:not-allowed}
-.done-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center;gap:16px}
-.done-circle{width:80px;height:80px;border-radius:50%;background:#dcfce7;display:flex;align-items:center;justify-content:center;font-size:40px;animation:pop .6s cubic-bezier(.175,.885,.32,1.275) both}
-.done-wrap h2{font-size:24px;font-weight:800}
-.done-wrap p{font-size:14px;color:#6b7280;line-height:1.6;max-width:280px}
-.done-btn{background:#111;color:#fff;border:none;padding:14px 32px;border-radius:14px;font-size:15px;cursor:pointer;font-weight:700;width:100%}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* ── DONE ───────────────────────────── */
+.done-scene{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:40px 24px;text-align:center}
+.done-ring{width:80px;height:80px;border-radius:50%;background:#14412a;display:flex;align-items:center;justify-content:center;font-size:40px;animation:pop .6s cubic-bezier(.175,.885,.32,1.275) both}
+.done-scene h2{font-family:'Nunito',sans-serif;font-size:24px;font-weight:900;color:var(--white)}
+.done-scene p{font-size:14px;color:#8b949e;line-height:1.6;max-width:260px}
+.done-btn{background:var(--green);color:#0d1117;border:none;padding:14px 32px;border-radius:14px;font-family:'Nunito',sans-serif;font-size:15px;cursor:pointer;font-weight:900;width:100%}
+
+/* ── ANIMATIONS ─────────────────────── */
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 @keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
-@keyframes wv{0%,100%{height:4px}50%{height:18px}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-.slide.in .fact:nth-child(1){animation:fadeUp .3s .04s both}
-.slide.in .fact:nth-child(2){animation:fadeUp .3s .1s both}
-.slide.in .fact:nth-child(3){animation:fadeUp .3s .17s both}
-.slide.in .fact:nth-child(4){animation:fadeUp .3s .24s both}
-.slide.in .fact:nth-child(5){animation:fadeUp .3s .31s both}
-.slide.in .sc{animation:pop .35s cubic-bezier(.175,.885,.32,1.275) both}
-.slide.in .sc:nth-child(2){animation-delay:.08s}
-.slide.in .sc:nth-child(3){animation-delay:.16s}
-.slide.in .ti{animation:fadeUp .3s both}
-.slide.in .ti:nth-child(2){animation-delay:.08s}
-.slide.in .ti:nth-child(3){animation-delay:.16s}
-.slide.in .sr{animation:fadeUp .28s both}
-.slide.in .sr:nth-child(2){animation-delay:.06s}
-.slide.in .sr:nth-child(3){animation-delay:.12s}
-.slide.in .sr:nth-child(4){animation-delay:.18s}
-.slide.in .sr:nth-child(5){animation-delay:.24s}
-.slide.in .chip{animation:pop .28s both}
-.slide.in .chip:nth-child(2){animation-delay:.05s}
-.slide.in .chip:nth-child(3){animation-delay:.1s}
-.slide.in .chip:nth-child(4){animation-delay:.15s}
-.slide.in .chip:nth-child(5){animation-delay:.2s}
-.slide.in .chip:nth-child(6){animation-delay:.25s}
+@keyframes wv{0%,100%{height:3px}50%{height:16px}}
 </style>
 </head>
 <body>
-<div id="app">
+<div id="shell">
+
+<!-- HOME -->
 <div id="home">
-  <div class="home-header">
-    <div class="home-tag">EduGalp · GG25</div>
-    <div class="home-title">Aprende.<br>Explora.<br>Age.</div>
-    <div class="home-sub">4 módulos sobre sustentabilidade em Moçambique</div>
-  </div>
-  <div class="mod-list" id="modList"></div>
+  <div class="home-eyebrow">EduGalp · GG25</div>
+  <div class="home-h1">Aprende.<br>Explora.<br>Age.</div>
+  <div class="home-sub">4 módulos de sustentabilidade — narrados e animados</div>
+  <div class="mod-grid" id="modGrid"></div>
 </div>
-<div id="slideView">
-  <div class="sbar">
-    <button class="sback" onclick="goHome()">←</button>
-    <span class="smod-title" id="sModTitle"></span>
-    <div class="spills" id="sPills"></div>
+
+<!-- PLAYER -->
+<div id="player">
+  <div class="pbar">
+    <button class="pbk" onclick="goHome()">←</button>
+    <span class="ptitle" id="ptitle"></span>
+    <div class="pdots" id="pdots"></div>
   </div>
-  <div class="play-bar" onclick="toggleNar()">
-    <div class="play-ico" id="playIco">
+
+  <div class="stage" id="stage"></div>
+
+  <div class="nar-bar playing" id="narBar" onclick="toggleNar()">
+    <div class="nar-ico" id="narIco">
       <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
     </div>
-    <div class="play-meta">
-      <div class="play-lbl">Narração</div>
-      <div class="play-status" id="playStatus">Toca para ouvir 🎧</div>
+    <div class="nar-meta">
+      <div class="nar-lbl">Narração</div>
+      <div class="nar-status" id="narStatus">Toca para ouvir 🎧</div>
     </div>
-    <div class="play-wave off" id="playWave">
-      <span class="pw"></span><span class="pw"></span><span class="pw"></span><span class="pw"></span><span class="pw"></span>
+    <div class="nar-wave off" id="narWave">
+      <span class="nw"></span><span class="nw"></span><span class="nw"></span><span class="nw"></span><span class="nw"></span>
     </div>
   </div>
-  <div class="slide-stage" id="slideStage"></div>
-  <div class="snav">
+
+  <div class="pnav">
     <button class="nb s" id="prevBtn" onclick="nav(-1)">← Anterior</button>
     <button class="nb p" id="nextBtn" onclick="nav(1)">Próximo →</button>
   </div>
 </div>
+
 </div>
 <script>
-const M=[
-{id:'water',title:'Água',emoji:'💧',sub:'Consumo responsável',cls:'wc',slides:[
-{nar:'Em Moçambique, a água é um recurso precioso e frágil. Apenas 63 por cento da população tem acesso a água potável. Conhecer esta realidade é o primeiro passo para agir.',html:`<div class="hero" style="background:linear-gradient(135deg,#e0f2fe,#bae6fd)"><div class="hbig">💧</div><h2 style="color:#0c4a6e">Água — o recurso mais precioso</h2><p style="color:#0369a1">Em Moçambique, a realidade é desafiante. Mas cada acção conta.</p></div><div class="scards c3"><div class="sc bl"><div class="sn">63%</div><div class="sl">com água potável</div></div><div class="sc rd"><div class="sn">65%</div><div class="sl">sem saneamento</div></div><div class="sc am"><div class="sn">36%</div><div class="sl">sem instalações</div></div></div><div class="fact bl"><span class="fi">🌍</span><div class="fb"><strong>Crise global</strong><span>4 mil milhões de pessoas sofrem escassez de água pelo menos 1 mês por ano</span></div></div>`},
-{nar:'Sabes onde mais desperdiças água? Mais de metade do consumo doméstico passa pela casa de banho. Uma torneira a pingar deita fora 75 litros por dia — uma banheira cheia.',html:`<div class="qlbl">Onde vai a nossa água?</div><div class="scards c2"><div class="sc dk"><div class="sn">+50%</div><div class="sl">Casa de banho</div></div><div class="sc bl"><div class="sn">20%</div><div class="sl">Cozinha</div></div></div><div class="scards c2"><div class="sc rd"><div class="sn">75L</div><div class="sl">Torneira a pingar — por dia</div></div><div class="sc rd"><div class="sn">750L</div><div class="sl">Autoclismo com fuga — por dia</div></div></div><div class="fact am"><span class="fi">🚿</span><div class="fb"><strong>Duche de 15 min = 150 litros</strong><span>Em 5 minutos usas apenas 50L — poupas 100L por duche</span></div></div>`},
-{nar:'Estas dicas simples podem poupar centenas de litros por semana. Experimenta uma hoje.',html:`<div class="qlbl">Acções simples, grande impacto</div><div class="steps"><div class="sr"><div class="snum" style="background:#0ea5e9">1</div><div class="st"><strong>Duche de 5 minutos</strong><span>Fecha a água enquanto te ensaboas → poupa 100L</span></div></div><div class="sr"><div class="snum" style="background:#0ea5e9">2</div><div class="st"><strong>Fecha torneira ao escovar dentes</strong><span>Usa copo → poupa 12L por lavagem</span></div></div><div class="sr"><div class="snum" style="background:#0ea5e9">3</div><div class="st"><strong>Lava loiça com bacia</strong><span>Sem água a correr → poupa 50L por lavagem</span></div></div><div class="sr"><div class="snum" style="background:#0ea5e9">4</div><div class="st"><strong>Rega de manhã cedo</strong><span>Menos evaporação, melhor absorção pelas plantas</span></div></div><div class="sr"><div class="snum" style="background:#0ea5e9">5</div><div class="st"><strong>Reporta fugas sempre</strong><span>Autoclismo com fuga → 750L desperdiçados por dia</span></div></div></div>`},
-{nar:'A escassez de água é também uma crise económica. As Nações Unidas prevêem que até 2050, 45 por cento do produto interno bruto mundial pode estar em risco.',html:`<div class="qlbl">Impacto económico global</div><div class="scards c2"><div class="sc rd"><div class="sn">45%</div><div class="sl">do PIB mundial em risco até 2050</div></div><div class="sc am"><div class="sn">40%</div><div class="sl">da produção de cereais ameaçada</div></div></div><div class="fact gn"><span class="fi">🎯</span><div class="fb"><strong>ODS 6 — Meta para 2030</strong><span>Água potável e saneamento para todos — e tu podes contribuir</span></div></div><div class="fact bl"><span class="fi">🏢</span><div class="fb"><strong>No trabalho e na escola</strong><span>Reportar fugas, garrafa reutilizável, varrer em vez de mangueira — poupa até 300L</span></div></div><div class="qt" style="background:#e0f2fe;color:#0c4a6e">Jovens são agentes de mudança — ensinar a família multiplica o impacto.</div>`}
+// ─── DATA ─────────────────────────────────────────────────────────────────────
+// Each scene has: nar (narration text), timings (seconds at which each .se element appears), html
+const MODULES = [
+{id:'w',title:'💧 Água',sub:'Consumo responsável',cls:'w',
+scenes:[
+{
+  nar:'Em Moçambique, apenas 63 por cento da população tem água potável. Enquanto isso, uma torneira a pingar deita fora 75 litros por dia. A realidade exige que ajamos.',
+  timings:[0, 1.2, 2.6, 4.0],
+  html:`
+    <div class="se big-icon">💧</div>
+    <div class="se hero-label">A crise da água</div>
+    <div class="se bubble-row">
+      <div class="bubble rd"><div class="bnum">63%</div><div class="blbl">com água potável</div></div>
+      <div class="bubble rd"><div class="bnum">65%</div><div class="blbl">sem saneamento</div></div>
+      <div class="bubble am"><div class="bnum">36%</div><div class="blbl">sem instalações</div></div>
+    </div>
+    <div class="se fact-pill bl">
+      <span class="fp-ico">🌍</span>
+      <div class="fp-txt"><strong>4 mil milhões</strong><span>Sofrem escassez de água pelo menos 1 mês por ano</span></div>
+    </div>`
+},{
+  nar:'Sabes onde gastas mais água? Mais de metade vai para a casa de banho. Uma torneira a pingar deita fora 75 litros por dia. Um autoclismo com fuga — 750 litros!',
+  timings:[0, 1.5, 3.0, 4.5],
+  html:`
+    <div class="se hero-label" style="font-size:18px">Onde vai a tua água?</div>
+    <div class="se bubble-row">
+      <div class="bubble wh"><div class="bnum">+50%</div><div class="blbl">Casa de banho</div></div>
+      <div class="bubble bl"><div class="bnum">20%</div><div class="blbl">Cozinha</div></div>
+    </div>
+    <div class="se fact-pill rd">
+      <span class="fp-ico">🚱</span>
+      <div class="fp-txt"><strong>Torneira a pingar</strong><span>75 litros desperdiçados por dia — uma banheira cheia</span></div>
+    </div>
+    <div class="se fact-pill rd">
+      <span class="fp-ico">🚽</span>
+      <div class="fp-txt"><strong>Autoclismo com fuga</strong><span>750 litros por dia — age agora, reporta a fuga</span></div>
+    </div>`
+},{
+  nar:'Cinco hábitos simples e poupas centenas de litros por semana. Duche de 5 minutos. Torneira fechada ao escovar os dentes. Loiça com bacia. Rega de manhã. Reporta fugas.',
+  timings:[0, 1.0, 2.0, 3.2, 4.4, 5.5],
+  html:`
+    <div class="se hero-label" style="font-size:18px">5 hábitos que mudam tudo</div>
+    <div class="steps-wrap">
+      <div class="se srow"><div class="snum" style="background:#3ddc84">1</div><div class="stxt"><strong>Duche 5 minutos</strong><span>Fecha a água enquanto te ensaboas → poupa 100L</span></div></div>
+      <div class="se srow"><div class="snum" style="background:#3ddc84">2</div><div class="stxt"><strong>Torneira fechada ao escovar dentes</strong><span>Usa um copo → poupa 12L por lavagem</span></div></div>
+      <div class="se srow"><div class="snum" style="background:#3ddc84">3</div><div class="stxt"><strong>Loiça com bacia</strong><span>Sem água a correr → poupa 50L por lavagem</span></div></div>
+      <div class="se srow"><div class="snum" style="background:#3ddc84">4</div><div class="stxt"><strong>Rega de manhã cedo</strong><span>Menos evaporação, plantas absorvem melhor</span></div></div>
+      <div class="se srow"><div class="snum" style="background:#3ddc84">5</div><div class="stxt"><strong>Reporta fugas sempre</strong><span>750L por dia desperdiçados — resolve já</span></div></div>
+    </div>`
+},{
+  nar:'A escassez de água é também económica. Até 2050, 45 por cento do produto interno bruto mundial pode estar em risco. E tu podes ser parte da solução — começa hoje.',
+  timings:[0, 1.5, 3.2, 5.0],
+  html:`
+    <div class="se big-icon" style="font-size:60px">⚡</div>
+    <div class="se bubble-row">
+      <div class="bubble rd"><div class="bnum">45%</div><div class="blbl">do PIB mundial em risco até 2050</div></div>
+      <div class="bubble am"><div class="bnum">40%</div><div class="blbl">da produção de cereais ameaçada</div></div>
+    </div>
+    <div class="se fact-pill gn">
+      <span class="fp-ico">🎯</span>
+      <div class="fp-txt"><strong>ODS 6 — Meta 2030</strong><span>Água potável e saneamento para todos — a tua acção conta</span></div>
+    </div>`
+}
 ]},
-{id:'energy',title:'Energias',emoji:'☀️',sub:'Fontes limpas do futuro',cls:'ec',slides:[
-{nar:'As energias renováveis vêm de recursos naturais que nunca se esgotam — o sol, o vento, a água. Moçambique tem um potencial enorme ainda por explorar.',html:`<div class="hero" style="background:linear-gradient(135deg,#fef3c7,#fde68a)"><div class="hbig">☀️</div><h2 style="color:#78350f">Energias Renováveis</h2><p style="color:#92400e">Recursos naturais inesgotáveis — o futuro de Moçambique e do mundo.</p></div><div class="trio"><div class="ti" style="background:#dbeafe"><div class="tico">🌿</div><h4 style="color:#1e40af">Ambiental</h4><p style="color:#1d4ed8">Protege a natureza</p></div><div class="ti" style="background:#fef3c7"><div class="tico">💼</div><h4 style="color:#92400e">Económico</h4><p style="color:#b45309">Cria empregos</p></div><div class="ti" style="background:#dcfce7"><div class="tico">👥</div><h4 style="color:#14532d">Social</h4><p style="color:#15803d">Chega a todos</p></div></div>`},
-{nar:'Existem seis grandes fontes de energia renovável. Solar, eólica, hidroeléctrica, biomassa, geotérmica e das marés. Cada uma com características únicas e potencial enorme.',html:`<div class="qlbl">As 6 fontes renováveis</div><div class="fact gn"><span class="fi">☀️</span><div class="fb"><strong>Solar</strong><span>Painéis convertem luz em electricidade. Moçambique tem das maiores incidências solares do mundo!</span></div></div><div class="fact bl"><span class="fi">💨</span><div class="fb"><strong>Eólica</strong><span>Turbinas transformam o vento em energia — quanto mais forte, mais energia produzida.</span></div></div><div class="fact bl"><span class="fi">💧</span><div class="fb"><strong>Hidroeléctrica</strong><span>A força da água gera electricidade — a renovável mais usada no mundo.</span></div></div><div class="fact am"><span class="fi">🌱</span><div class="fb"><strong>Biomassa + Geotérmica + Marés</strong><span>Resíduos orgânicos, calor da Terra e oceanos — potencial enorme para o futuro.</span></div></div>`},
-{nar:'A diferença entre renováveis e não renováveis é enorme. Petróleo, carvão e gás natural são finitos e libertam dióxido de carbono que causa as alterações climáticas.',html:`<div class="qlbl">Renováveis vs Não-renováveis</div><div class="versus"><div class="vc vbad"><h4 style="color:#991b1b">⚠️ Não renov.</h4><ul style="color:#b91c1c"><li>🛢️ Petróleo</li><li>⛏️ Carvão</li><li>🔥 Gás natural</li><li style="margin-top:8px;font-weight:700;font-size:10px">Poluentes · Finitas</li></ul></div><div class="vmid">VS</div><div class="vc vgood"><h4 style="color:#065f46">✅ Renov.</h4><ul style="color:#047857"><li>☀️ Solar</li><li>💨 Eólica</li><li>💧 Hídrica</li><li style="margin-top:8px;font-weight:700;font-size:10px">Limpas · Eternas</li></ul></div></div><div class="fact rd"><span class="fi">🌡️</span><div class="fb"><strong>Aquecimento global</strong><span>CO₂ dos fósseis aquece a atmosfera — secas, cheias e temperaturas extremas</span></div></div><div class="fact am"><span class="fi">🌲</span><div class="fb"><strong>Desflorestação</strong><span>Uso excessivo de carvão vegetal destrói florestas de Moçambique</span></div></div>`},
-{nar:'No dia a dia podes já fazer a diferença. Usa lâmpadas LED, desliga aparelhos da tomada e aproveita a luz natural. Fácil, gratuito e com impacto imediato.',html:`<div class="qlbl">Atitudes renováveis hoje</div><div class="fact gn"><span class="fi">💡</span><div class="fb"><strong>Lâmpadas LED</strong><span>Consomem até 80% menos energia do que as incandescentes tradicionais</span></div></div><div class="fact bl"><span class="fi">🔌</span><div class="fb"><strong>Desliga da tomada</strong><span>O modo standby consome energia continuamente — desligue completamente</span></div></div><div class="fact am"><span class="fi">🌤️</span><div class="fb"><strong>Aproveita a luz natural</strong><span>Abre janelas antes de ligar a luz — simples e gratuito</span></div></div><div class="fact pu"><span class="fi">🌳</span><div class="fb"><strong>Planta árvores</strong><span>Absorvem CO₂ directamente — um dos actos mais impactantes que podes fazer</span></div></div><div class="qt" style="background:#fef3c7;color:#78350f">Começa aqui — as atitudes diárias têm impacto imediato e não custam nada.</div>`}
+{id:'e',title:'☀️ Energias',sub:'Fontes limpas do futuro',cls:'e',
+scenes:[
+{
+  nar:'As energias renováveis vêm do sol, do vento e da água — recursos que nunca se esgotam. Moçambique tem potencial enorme. Isto é o futuro.',
+  timings:[0, 1.2, 2.8, 4.2],
+  html:`
+    <div class="se big-icon">☀️</div>
+    <div class="se hero-label">Energias Renováveis</div>
+    <div class="se trio">
+      <div class="ti" style="background:#0d1f35"><div class="tico">🌿</div><h4 style="color:#93c5fd">Ambiental</h4><p>Protege a natureza</p></div>
+      <div class="ti" style="background:#1e1400"><div class="tico">💼</div><h4 style="color:#fcd34d">Económico</h4><p>Cria empregos</p></div>
+      <div class="ti" style="background:#0a2419"><div class="tico">👥</div><h4 style="color:#6ee7b7">Social</h4><p>Chega a todos</p></div>
+    </div>
+    <div class="se qt">Moçambique tem das maiores incidências solares do mundo — o potencial está por explorar.</div>`
+},{
+  nar:'Solar, eólica, hidroeléctrica, biomassa, geotérmica, marés. Seis fontes limpas que não se esgotam. Diferentes recursos para diferentes regiões — todas vitais para o futuro.',
+  timings:[0, 0.8, 1.6, 2.5, 3.4, 4.3, 5.2],
+  html:`
+    <div class="se hero-label" style="font-size:18px">As 6 fontes renováveis</div>
+    <div class="se fact-pill gn"><span class="fp-ico">☀️</span><div class="fp-txt"><strong>Solar</strong><span>Painéis convertem luz em electricidade — ideal para Moçambique</span></div></div>
+    <div class="se fact-pill bl"><span class="fp-ico">💨</span><div class="fp-txt"><strong>Eólica</strong><span>Turbinas transformam vento em energia — quanto mais forte, mais energia</span></div></div>
+    <div class="se fact-pill bl"><span class="fp-ico">💧</span><div class="fp-txt"><strong>Hidroeléctrica</strong><span>Força da água — a renovável mais usada no mundo</span></div></div>
+    <div class="se fact-pill am"><span class="fp-ico">🌱</span><div class="fp-txt"><strong>Biomassa + Geotérmica + Marés</strong><span>Resíduos, calor da Terra e oceanos — potencial enorme</span></div></div>`
+},{
+  nar:'Do outro lado, estão o petróleo, o carvão e o gás natural. Finitos e poluentes. Libertam dióxido de carbono que causa o aquecimento global, secas e cheias.',
+  timings:[0, 1.2, 2.8, 4.0],
+  html:`
+    <div class="se hero-label" style="font-size:18px">O problema dos fósseis</div>
+    <div class="se vs-wrap">
+      <div class="vs-col vs-bad"><h4 style="color:#f87171">⚠️ Fósseis</h4><ul style="color:#fca5a5"><li>🛢️ Petróleo</li><li>⛏️ Carvão</li><li>🔥 Gás natural</li><li style="margin-top:6px;font-weight:700;font-size:10px;color:#f87171">Finitos · Poluentes</li></ul></div>
+      <div class="vs-mid">VS</div>
+      <div class="vs-col vs-good"><h4 style="color:#34d399">✅ Renováveis</h4><ul style="color:#6ee7b7"><li>☀️ Solar</li><li>💨 Eólica</li><li>💧 Hídrica</li><li style="margin-top:6px;font-weight:700;font-size:10px;color:#34d399">Eternos · Limpos</li></ul></div>
+    </div>
+    <div class="se fact-pill rd"><span class="fp-ico">🌡️</span><div class="fp-txt"><strong>Aquecimento global</strong><span>CO₂ dos fósseis → secas, cheias, temperaturas extremas em Moçambique</span></div></div>`
+},{
+  nar:'No dia a dia podes já agir. Lâmpada LED usa 80 por cento menos energia. Desligar da tomada elimina o consumo em standby. E plantar árvores absorve carbono directamente.',
+  timings:[0, 1.0, 2.2, 3.5, 4.8],
+  html:`
+    <div class="se hero-label" style="font-size:18px">Age já — sem custar nada</div>
+    <div class="se fact-pill gn"><span class="fp-ico">💡</span><div class="fp-txt"><strong>Lâmpada LED</strong><span>Consome 80% menos energia que as incandescentes</span></div></div>
+    <div class="se fact-pill bl"><span class="fp-ico">🔌</span><div class="fp-txt"><strong>Desliga da tomada</strong><span>Standby consome sempre — desligue completamente</span></div></div>
+    <div class="se fact-pill am"><span class="fp-ico">🌤️</span><div class="fp-txt"><strong>Luz natural</strong><span>Abre as janelas antes de ligar a luz</span></div></div>
+    <div class="se fact-pill pu"><span class="fp-ico">🌳</span><div class="fp-txt"><strong>Planta árvores</strong><span>Absorvem CO₂ — um dos actos mais impactantes que podes fazer</span></div></div>`
+}
 ]},
-{id:'recycle',title:'Reciclagem',emoji:'♻️',sub:'Gestão de resíduos',cls:'rc',slides:[
-{nar:'A reciclagem transforma materiais usados em novos produtos. Os três R da sustentabilidade são reduzir, reutilizar e reciclar — por esta ordem.',html:`<div class="hero" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0)"><div class="hbig">♻️</div><h2 style="color:#064e3b">Reciclagem e Resíduos</h2><p style="color:#065f46">Transformar lixo em recurso — mais simples do que pensas.</p></div><div class="trio"><div class="ti" style="background:#dbeafe"><div class="tico">📉</div><h4 style="color:#1e40af">Reduzir</h4><p style="color:#1d4ed8">Evita gerar lixo</p></div><div class="ti" style="background:#fef3c7"><div class="tico">🔄</div><h4 style="color:#92400e">Reutilizar</h4><p style="color:#b45309">Nova vida aos objectos</p></div><div class="ti" style="background:#dcfce7"><div class="tico">♻️</div><h4 style="color:#14532d">Reciclar</h4><p style="color:#15803d">Separa correctamente</p></div></div>`},
-{nar:'O sistema de cores de separação do lixo é fácil. Azul para papel e cartão. Verde para vidro. Amarelo para plástico e metal. Os orgânicos tornam-se adubo. E os perigosos precisam de pontos especiais.',html:`<div class="qlbl">Sistema de cores</div><div class="chips"><div class="chip" style="background:#dbeafe"><div class="ci">📦</div><h4 style="color:#1e40af">Azul</h4><p>Papel e cartão</p></div><div class="chip" style="background:#dcfce7"><div class="ci">🍶</div><h4 style="color:#14532d">Verde</h4><p>Vidro</p></div><div class="chip" style="background:#fef9c3"><div class="ci">🥤</div><h4 style="color:#854d0e">Amarelo</h4><p>Plástico e metal</p></div><div class="chip" style="background:#f3f4f6"><div class="ci">🗑️</div><h4 style="color:#374151">Cinza</h4><p>Indiferenciado</p></div><div class="chip" style="background:#fed7aa"><div class="ci">🍂</div><h4 style="color:#9a3412">Orgânico</h4><p>Compostagem</p></div><div class="chip" style="background:#fee2e2"><div class="ci">⚠️</div><h4 style="color:#991b1b">Perigoso</h4><p>Ponto especial</p></div></div>`},
-{nar:'Os números da reciclagem são impressionantes. Reciclar uma tonelada de papel salva 17 árvores. Uma garrafa de vidro reciclada poupa energia para iluminar uma lâmpada por quatro horas.',html:`<div class="qlbl">Os números falam por si</div><div class="scards c2"><div class="sc gn"><div class="sn">17</div><div class="sl">árvores salvas por tonelada de papel reciclado</div></div><div class="sc am"><div class="sn">25×</div><div class="sl">mais poluente é o metano vs CO₂</div></div></div><div class="fact gn"><span class="fi">💡</span><div class="fb"><strong>1 garrafa de vidro reciclada</strong><span>Energia poupada = lâmpada acesa por 4 horas</span></div></div><div class="fact bl"><span class="fi">💼</span><div class="fb"><strong>Cria empregos</strong><span>Cooperativas de reciclagem — os resíduos tornam-se recursos e rendimento</span></div></div><div class="fact pu"><span class="fi">🌊</span><div class="fb"><strong>Protege os oceanos</strong><span>Menos plástico no lixo = menos plástico no mar e na nossa comida</span></div></div>`},
-{nar:'A gestão de resíduos tem cinco etapas: geração, separação, recolha, tratamento e disposição final. Quando separas o lixo correctamente, estás a dar-lhe uma nova vida.',html:`<div class="qlbl">Ciclo de gestão de resíduos</div><div class="steps"><div class="sr"><div class="snum" style="background:#22c55e">1</div><div class="st"><strong>Geração</strong><span>Produção de resíduos — doméstico, industrial, hospitalar</span></div></div><div class="sr"><div class="snum" style="background:#22c55e">2</div><div class="st"><strong>Separação</strong><span>Por tipo — reciclável, orgânico, perigoso, indiferenciado</span></div></div><div class="sr"><div class="snum" style="background:#22c55e">3</div><div class="st"><strong>Recolha e transporte</strong><span>Pelas autoridades para centros de tratamento</span></div></div><div class="sr"><div class="snum" style="background:#22c55e">4</div><div class="st"><strong>Tratamento</strong><span>Reciclagem, compostagem, incineração controlada</span></div></div><div class="sr"><div class="snum" style="background:#22c55e">5</div><div class="st"><strong>Disposição final</strong><span>Aterro controlado — minimizar este passo é o objectivo!</span></div></div></div><div class="qt" style="background:#f0fdf4;color:#14532d">O lixo não desaparece — apenas muda de lugar. Quando o separas, dás-lhe nova vida.</div>`}
+{id:'r',title:'♻️ Reciclagem',sub:'Gestão de resíduos',cls:'r',
+scenes:[
+{
+  nar:'A reciclagem transforma o lixo em recursos. Os três R — reduzir, reutilizar, reciclar — nesta ordem. Primeiro evita gerar, depois reutiliza, e só depois recicla.',
+  timings:[0, 1.5, 2.8, 4.2],
+  html:`
+    <div class="se big-icon">♻️</div>
+    <div class="se hero-label">Reciclar é simples</div>
+    <div class="se trio">
+      <div class="ti" style="background:#0d1f35"><div class="tico">📉</div><h4 style="color:#93c5fd">Reduzir</h4><p>Evita gerar lixo</p></div>
+      <div class="ti" style="background:#1e1400"><div class="tico">🔄</div><h4 style="color:#fcd34d">Reutilizar</h4><p>Nova vida</p></div>
+      <div class="ti" style="background:#0a2419"><div class="tico">♻️</div><h4 style="color:#6ee7b7">Reciclar</h4><p>Separa sempre</p></div>
+    </div>
+    <div class="se qt">O lixo não desaparece — apenas muda de lugar. Quando separas, dás-lhe nova vida.</div>`
+},{
+  nar:'Azul para papel e cartão. Verde para vidro. Amarelo para plástico e metal. Orgânicos viram adubo. E os perigosos — pilhas, medicamentos — precisam de pontos especiais.',
+  timings:[0, 0.8, 1.6, 2.5, 3.4, 4.3, 5.2],
+  html:`
+    <div class="se hero-label" style="font-size:18px">Onde vai cada lixo?</div>
+    <div class="chips">
+      <div class="se chip" style="background:#0d1f35;border-color:#1e3a5f"><div class="cico">📦</div><h4 style="color:#93c5fd">Azul</h4><p>Papel e cartão</p></div>
+      <div class="se chip" style="background:#0a2419;border-color:#14412a"><div class="cico">🍶</div><h4 style="color:#6ee7b7">Verde</h4><p>Vidro</p></div>
+      <div class="se chip" style="background:#1e1400;border-color:#4a2d00"><div class="cico">🥤</div><h4 style="color:#fcd34d">Amarelo</h4><p>Plástico e metal</p></div>
+      <div class="se chip" style="background:#1c2128;border-color:#30363d"><div class="cico">🗑️</div><h4 style="color:#e6edf3">Cinza</h4><p>Indiferenciado</p></div>
+      <div class="se chip" style="background:#1a1200;border-color:#3d2a00"><div class="cico">🍂</div><h4 style="color:#fbbf24">Orgânico</h4><p>Compostagem</p></div>
+      <div class="se chip" style="background:#1e0a0a;border-color:#4a1515"><div class="cico">⚠️</div><h4 style="color:#f87171">Perigoso</h4><p>Ponto especial</p></div>
+    </div>`
+},{
+  nar:'Uma tonelada de papel reciclado salva 17 árvores. Uma garrafa de vidro reciclada poupa energia para uma lâmpada acesa 4 horas. E o metano do lixo em decomposição é 25 vezes mais poluente que o dióxido de carbono.',
+  timings:[0, 1.5, 3.0, 4.5],
+  html:`
+    <div class="se hero-label" style="font-size:18px">Os números impressionam</div>
+    <div class="se bubble-row">
+      <div class="bubble gn"><div class="bnum">17</div><div class="blbl">árvores salvas por tonelada de papel</div></div>
+      <div class="bubble am"><div class="bnum">25×</div><div class="blbl">mais poluente é o metano vs CO₂</div></div>
+    </div>
+    <div class="se fact-pill gn"><span class="fp-ico">💡</span><div class="fp-txt"><strong>1 garrafa de vidro reciclada</strong><span>Energia poupada = lâmpada acesa por 4 horas</span></div></div>
+    <div class="se fact-pill bl"><span class="fp-ico">🌊</span><div class="fp-txt"><strong>Protege os oceanos</strong><span>Menos plástico no lixo = menos plástico no mar e na nossa comida</span></div></div>`
+},{
+  nar:'Geração, separação, recolha, tratamento, disposição final. Cinco etapas — e a mais importante é a segunda: separar correctamente em casa. Tudo começa aí.',
+  timings:[0, 0.8, 1.6, 2.5, 3.4, 4.5],
+  html:`
+    <div class="se hero-label" style="font-size:18px">O ciclo do lixo</div>
+    <div class="steps-wrap">
+      <div class="se srow"><div class="snum" style="background:#3ddc84">1</div><div class="stxt"><strong>Geração</strong><span>Produção de resíduos diários</span></div></div>
+      <div class="se srow"><div class="snum" style="background:#3ddc84">2</div><div class="stxt"><strong>Separação ← começa aqui!</strong><span>Separa por tipo em casa — esta é a etapa mais importante</span></div></div>
+      <div class="se srow"><div class="snum" style="background:#3ddc84">3</div><div class="stxt"><strong>Recolha e transporte</strong><span>Pelas autoridades para centros de tratamento</span></div></div>
+      <div class="se srow"><div class="snum" style="background:#3ddc84">4</div><div class="stxt"><strong>Tratamento</strong><span>Reciclagem, compostagem, incineração controlada</span></div></div>
+      <div class="se srow"><div class="snum" style="background:#3ddc84">5</div><div class="stxt"><strong>Disposição final</strong><span>Aterro controlado — o objectivo é minimizar este passo</span></div></div>
+    </div>`
+}
 ]},
-{id:'gas',title:'Carvão vs Gás',emoji:'🔥',sub:'Escolha económica e limpa',cls:'gc',slides:[
-{nar:'Moçambique produz gás natural, mas a maioria das famílias ainda cozinha com carvão. A comparação revela dados surpreendentes sobre custo, saúde e ambiente.',html:`<div class="hero" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe)"><div class="hbig">🔥</div><h2 style="color:#3b0764">Carvão vs Gás GPL</h2><p style="color:#4c1d95">Moçambique produz gás — mas a maioria ainda cozinha a carvão. O que muda se mudares?</p></div><div class="fact pu"><span class="fi">🪵</span><div class="fb"><strong>Carvão — combustível dominante</strong><span>Usado pela maioria, apesar dos custos crescentes e impactos negativos na saúde</span></div></div><div class="fact gn"><span class="fi">🔵</span><div class="fb"><strong>GPL — alternativa disponível</strong><span>Gás de Petróleo Liquefeito acessível em contexto urbano, com múltiplas vantagens</span></div></div>`},
-{nar:'Os números são claros. O carvão custa mais de 1.000 meticais por mês e dura apenas 15 a 25 dias. O gás custa cerca de 950 meticais e dura 30 dias ou mais. A poupança potencial é de 20 por cento.',html:`<div class="qlbl">Comparação directa de custos</div><div class="scards c2"><div class="sc rd"><div class="sn">+1000</div><div class="sl">MT/mês com carvão</div></div><div class="sc gn"><div class="sn">≈950</div><div class="sl">MT/mês com GPL</div></div></div><div class="scards c3"><div class="sc rd"><div class="sn">40MT</div><div class="sl">custo diário carvão</div></div><div class="sc gn"><div class="sn">32MT</div><div class="sl">custo diário GPL</div></div><div class="sc pu"><div class="sn">~20%</div><div class="sl">poupança potencial</div></div></div><div class="versus"><div class="vc vbad"><h4 style="color:#991b1b">🪵 Carvão</h4><ul style="color:#b91c1c;font-size:11px"><li>⏱️ 15–25 dias</li><li>📉 Baixa eficiência</li><li>🔥 Calor irregular</li></ul></div><div class="vmid">VS</div><div class="vc vgood"><h4 style="color:#065f46">🔵 GPL</h4><ul style="color:#047857;font-size:11px"><li>⏱️ 30+ dias</li><li>📈 Alta eficiência</li><li>🎛️ Fácil de regular</li></ul></div></div>`},
-{nar:'O carvão queimado em espaços fechados produz fumo com partículas finas que causam doenças respiratórias. As crianças são as mais afectadas. E a produção de carvão acelera a desflorestação.',html:`<div class="qlbl">Saúde e ambiente</div><div class="fact rd"><span class="fi">😮‍💨</span><div class="fb"><strong>Fumo com partículas PM2.5</strong><span>Penetram nos pulmões — asma e doenças crónicas, especialmente em crianças</span></div></div><div class="fact am"><span class="fi">🌲</span><div class="fb"><strong>Desflorestação acelerada</strong><span>Produção de carvão destrói florestas — habitats perdidos e menos CO₂ absorvido</span></div></div><div class="fact gn"><span class="fi">✅</span><div class="fb"><strong>GPL é muito mais limpo</strong><span>Combustão limpa, sem fumo, zero contribuição para desflorestação</span></div></div><div class="scards c2"><div class="sc gn"><div class="sn">↓80%</div><div class="sl">menos poluição doméstica com GPL</div></div><div class="sc bl"><div class="sn">0</div><div class="sl">árvores cortadas para produzir GPL</div></div></div>`},
-{nar:'Apesar das vantagens, existem barreiras reais. O custo inicial do equipamento é a principal. Mas a mudança é possível e vale a pena — para o bolso, para a saúde e para o planeta.',html:`<div class="qlbl">Barreiras e conclusão</div><div class="fact pu"><span class="fi">💸</span><div class="fb"><strong>Custo inicial do equipamento</strong><span>Fogão e botija requerem investimento — recupera-se em poucos meses de poupança</span></div></div><div class="fact am"><span class="fi">😨</span><div class="fb"><strong>Percepção de risco</strong><span>Com equipamento certificado e uso correcto, o GPL é completamente seguro</span></div></div><div class="fact bl"><span class="fi">🏘️</span><div class="fb"><strong>Hábitos culturais</strong><span>A mudança leva tempo — informação e sensibilização são a chave</span></div></div><div class="trio"><div class="ti" style="background:#dcfce7"><div class="tico">💰</div><h4 style="color:#065f46">Poupa</h4><p style="color:#047857">Custo mensal inferior</p></div><div class="ti" style="background:#dbeafe"><div class="tico">❤️</div><h4 style="color:#1e40af">Saúde</h4><p style="color:#1d4ed8">Menos fumo</p></div><div class="ti" style="background:#f3e8ff"><div class="tico">🌿</div><h4 style="color:#4c1d95">Planeta</h4><p style="color:#7c3aed">Menos desmate</p></div></div><div class="qt" style="background:#ede9fe;color:#3b0764">A transição energética começa em casa — a tua escolha é uma escolha pelo futuro.</div>`}
+{id:'g',title:'🔥 Carvão vs Gás',sub:'A escolha mais inteligente',cls:'g',
+scenes:[
+{
+  nar:'Moçambique produz gás natural — mas a maioria ainda cozinha a carvão. Os dados mostram que mudar para gás GPL poupa dinheiro, melhora a saúde e protege as florestas.',
+  timings:[0, 1.5, 3.0, 4.5],
+  html:`
+    <div class="se big-icon">🔥</div>
+    <div class="se hero-label">Carvão vs Gás GPL</div>
+    <div class="se fact-pill pu"><span class="fp-ico">🪵</span><div class="fp-txt"><strong>Carvão — ainda dominante</strong><span>Maioria das famílias usa carvão, apesar dos custos e impactos crescentes</span></div></div>
+    <div class="se fact-pill gn"><span class="fp-ico">🔵</span><div class="fp-txt"><strong>GPL — alternativa já disponível</strong><span>Gás de Petróleo Liquefeito — mais económico, mais limpo, mais seguro</span></div></div>`
+},{
+  nar:'Carvão: mais de 1000 meticais por mês, dura 15 a 25 dias, custo diário de 40 meticais. Gás GPL: cerca de 950 meticais, dura 30 dias ou mais, custo diário de 32 meticais. Poupança de 20 por cento.',
+  timings:[0, 1.2, 2.6, 4.0, 5.2],
+  html:`
+    <div class="se hero-label" style="font-size:18px">Os números não mentem</div>
+    <div class="se bubble-row">
+      <div class="bubble rd"><div class="bnum">+1000</div><div class="blbl">MT/mês com carvão</div></div>
+      <div class="bubble gn"><div class="bnum">≈950</div><div class="blbl">MT/mês com GPL</div></div>
+    </div>
+    <div class="se vs-wrap">
+      <div class="vs-col vs-bad"><h4 style="color:#f87171">🪵 Carvão</h4><ul style="color:#fca5a5;font-size:11px"><li>⏱️ 15–25 dias</li><li>💰 40 MT/dia</li><li>📉 Baixa eficiência</li></ul></div>
+      <div class="vs-mid">VS</div>
+      <div class="vs-col vs-good"><h4 style="color:#34d399">🔵 GPL</h4><ul style="color:#6ee7b7;font-size:11px"><li>⏱️ 30+ dias</li><li>💰 32 MT/dia</li><li>📈 Alta eficiência</li></ul></div>
+    </div>
+    <div class="se bubble-row">
+      <div class="bubble pu"><div class="bnum">~20%</div><div class="blbl">poupança mensal potencial</div></div>
+    </div>`
+},{
+  nar:'O fumo do carvão em espaços fechados causa doenças respiratórias crónicas — especialmente em crianças. E a produção de carvão é uma das maiores causas de desflorestação em Moçambique.',
+  timings:[0, 1.5, 3.0, 4.5],
+  html:`
+    <div class="se hero-label" style="font-size:18px">Saúde e florestas em risco</div>
+    <div class="se fact-pill rd"><span class="fp-ico">😮‍💨</span><div class="fp-txt"><strong>Fumo PM2.5</strong><span>Partículas que entram nos pulmões — asma e doenças crónicas, especialmente em crianças</span></div></div>
+    <div class="se fact-pill am"><span class="fp-ico">🌲</span><div class="fp-txt"><strong>Desflorestação acelerada</strong><span>Produção de carvão destrói florestas de Moçambique — habitats e CO₂ perdidos</span></div></div>
+    <div class="se bubble-row">
+      <div class="bubble gn"><div class="bnum">↓80%</div><div class="blbl">menos poluição doméstica com GPL</div></div>
+      <div class="bubble bl"><div class="bnum">0</div><div class="blbl">árvores cortadas para produzir GPL</div></div>
+    </div>`
+},{
+  nar:'A principal barreira é o custo inicial do equipamento. Mas recupera-se em poucos meses. Com uso correcto, o GPL é completamente seguro. A mudança vale a pena — para ti, para a tua família e para o planeta.',
+  timings:[0, 1.5, 3.2, 4.8],
+  html:`
+    <div class="se hero-label" style="font-size:18px">Vale a pena mudar?</div>
+    <div class="se fact-pill pu"><span class="fp-ico">💸</span><div class="fp-txt"><strong>Barreira principal: custo inicial</strong><span>Fogão + botija — recupera em poucos meses de poupança mensal</span></div></div>
+    <div class="se trio">
+      <div class="ti" style="background:#0a2419"><div class="tico">💰</div><h4 style="color:#34d399">Poupa</h4><p style="color:#6ee7b7">Custo mensal inferior</p></div>
+      <div class="ti" style="background:#0d1f35"><div class="tico">❤️</div><h4 style="color:#60a5fa">Saúde</h4><p style="color:#93c5fd">Sem fumo em casa</p></div>
+      <div class="ti" style="background:#12091e"><div class="tico">🌿</div><h4 style="color:#a78bfa">Planeta</h4><p style="color:#c4b5fd">Menos desmate</p></div>
+    </div>
+    <div class="se qt">A transição energética começa em casa — a tua escolha de combustível é uma escolha pelo futuro.</div>`
+}
 ]}
 ];
-let cM=null,cS=0,done=new Set(),spk=false;
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let cM=null, cS=0, done=new Set(), speaking=false;
+let timers=[], animTimers=[];
 const sy=window.speechSynthesis;
-function getPTV(){const v=sy.getVoices();return v.find(x=>x.lang==='pt-PT')||v.find(x=>x.lang.startsWith('pt'))||v[0]}
-function speak(t){if(!sy)return;sy.cancel();const u=new SpeechSynthesisUtterance(t);const v=getPTV();if(v)u.voice=v;u.lang='pt-PT';u.rate=0.9;u.pitch=1;u.onstart=()=>{spk=true;updUI()};u.onend=u.onerror=()=>{spk=false;updUI()};sy.speak(u)}
-function toggleNar(){if(spk){sy.cancel();spk=false;updUI();return;}speak(M[cM].slides[cS].nar)}
-function updUI(){
-  const ps=document.getElementById('playStatus'),pw=document.getElementById('playWave'),pi=document.getElementById('playIco');
-  if(spk){if(ps)ps.textContent='A narrar... toca para parar';if(pw)pw.classList.remove('off');if(pi)pi.innerHTML='<svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#0f1923"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';}
-  else{if(ps)ps.textContent='Toca para ouvir 🎧';if(pw)pw.classList.add('off');if(pi)pi.innerHTML='<svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#0f1923"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>';}
+
+// ─── VOICE ───────────────────────────────────────────────────────────────────
+function getPTV(){
+  const v=sy.getVoices();
+  return v.find(x=>x.lang==='pt-PT')||v.find(x=>x.lang.startsWith('pt'))||null;
 }
-function renderHome(){document.getElementById('modList').innerHTML=M.map((m,i)=>`<div class="mod-card ${m.cls}" onclick="startMod(${i})"><div class="card-icon">${m.emoji}</div><div style="flex:1"><h3>${m.title}</h3><p>${m.sub}</p></div><div class="mod-arrow">${done.has(i)?'✓':'›'}</div>${done.has(i)?'<span class="done-badge">Concluído</span>':''}</div>`).join('')}
-function goHome(){if(sy)sy.cancel();spk=false;document.getElementById('home').style.display='flex';document.getElementById('slideView').classList.remove('on');renderHome()}
-function startMod(i){if(sy)sy.cancel();spk=false;cM=i;cS=0;document.getElementById('home').style.display='none';document.getElementById('slideView').classList.add('on');document.getElementById('sModTitle').textContent=M[i].emoji+' '+M[i].title;pills();showSlide('r');updUI()}
-function pills(){const t=M[cM].slides.length;document.getElementById('sPills').innerHTML=Array.from({length:t},(_,i)=>`<div class="spill ${i<cS?'done':i===cS?'cur':''}" style="min-width:${Math.max(14,52/t)}px"></div>`).join('')}
-function showSlide(dir){const stage=document.getElementById('slideStage');const old=stage.querySelector('.slide.in');if(old){old.classList.remove('in');old.classList.add('out');setTimeout(()=>old.remove(),320)}const el=document.createElement('div');el.className='slide';el.style.transform=dir==='r'?'translateX(60px)':'translateX(-60px)';el.innerHTML=M[cM].slides[cS].html;stage.appendChild(el);requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('in')));document.getElementById('prevBtn').disabled=false;document.getElementById('nextBtn').textContent=cS===M[cM].slides.length-1?'Concluir ✓':'Próximo →';pills();updUI()}
-function nav(d){if(sy)sy.cancel();spk=false;const t=M[cM].slides.length;if(d===1&&cS===t-1){done.add(cM);showDone();return}if(d===-1&&cS===0){goHome();return}cS=Math.max(0,Math.min(t-1,cS+d));showSlide(d===1?'r':'l')}
-function showDone(){if(sy)sy.cancel();spk=false;const stage=document.getElementById('slideStage');const old=stage.querySelector('.slide.in');if(old)old.remove();const el=document.createElement('div');el.className='slide in';el.innerHTML='<div class="done-wrap"><div class="done-circle">🎉</div><h2>Módulo concluído!</h2><p>Muito bem! Agora tens o conhecimento para fazer a diferença em Moçambique.</p><button class="done-btn" onclick="goHome()">← Ver todos os módulos</button></div>';stage.appendChild(el);document.getElementById('prevBtn').disabled=true;document.getElementById('nextBtn').disabled=true;speak('Parabéns! Completaste este módulo. Agora tens o conhecimento para fazer a diferença.')}
+// Preload voices
+if(sy.onvoiceschanged!==undefined) sy.onvoiceschanged=()=>getPTV();
+getPTV();
+
+function speak(text, onWord){
+  if(!sy) return;
+  sy.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  const v = getPTV();
+  if(v) u.voice=v;
+  u.lang='pt-PT'; u.rate=0.88; u.pitch=1;
+  u.onstart=()=>{ speaking=true; updNar(); };
+  u.onend=u.onerror=()=>{ speaking=false; updNar(); };
+  sy.speak(u);
+}
+
+function toggleNar(){
+  if(speaking){ sy.cancel(); speaking=false; updNar(); clearAnimTimers(); return; }
+  startSceneNar();
+}
+
+function startSceneNar(){
+  if(cM===null) return;
+  const sc = MODULES[cM].scenes[cS];
+  clearAnimTimers();
+  // schedule element reveals
+  sc.timings.forEach((t,i)=>{
+    const tid=setTimeout(()=>revealElement(i), t*1000);
+    animTimers.push(tid);
+  });
+  speak(sc.nar);
+}
+
+function clearAnimTimers(){
+  animTimers.forEach(t=>clearTimeout(t));
+  animTimers=[];
+}
+
+function revealElement(idx){
+  const scene=document.querySelector('.scene.in');
+  if(!scene) return;
+  const els=scene.querySelectorAll('.se');
+  if(els[idx]) els[idx].classList.add('show');
+}
+
+function revealAll(){
+  const scene=document.querySelector('.scene.in');
+  if(!scene) return;
+  scene.querySelectorAll('.se').forEach(el=>el.classList.add('show'));
+}
+
+function updNar(){
+  const st=document.getElementById('narStatus');
+  const wv=document.getElementById('narWave');
+  const ic=document.getElementById('narIco');
+  const nb=document.getElementById('narBar');
+  if(speaking){
+    if(st) st.textContent='A narrar... toca para pausar';
+    if(wv) wv.classList.remove('off');
+    if(nb) nb.classList.add('playing');
+    if(ic) ic.innerHTML='<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#3ddc84"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+  } else {
+    if(st) st.textContent='Toca para ouvir 🎧';
+    if(wv) wv.classList.add('off');
+    if(nb) nb.classList.remove('playing');
+    if(ic) ic.innerHTML='<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#3ddc84"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>';
+  }
+}
+
+// ─── HOME ─────────────────────────────────────────────────────────────────────
+function renderHome(){
+  document.getElementById('modGrid').innerHTML=MODULES.map((m,i)=>`
+    <div class="mc ${m.cls}${done.has(i)?' done':''}" onclick="startMod(${i})">
+      <div class="mico">${m.title.split(' ')[0]}</div>
+      <div class="mc-text"><h3>${m.title.substring(m.title.indexOf(' ')+1)}</h3><p>${m.sub}</p></div>
+      <div class="mchev">${done.has(i)?'✓':'›'}</div>
+    </div>`).join('');
+}
+
+function goHome(){
+  sy.cancel(); speaking=false; clearAnimTimers();
+  document.getElementById('home').style.display='flex';
+  document.getElementById('player').classList.remove('on');
+  renderHome();
+}
+
+// ─── PLAYER ───────────────────────────────────────────────────────────────────
+function startMod(i){
+  sy.cancel(); speaking=false; clearAnimTimers();
+  cM=i; cS=0;
+  document.getElementById('home').style.display='none';
+  document.getElementById('player').classList.add('on');
+  document.getElementById('ptitle').textContent=MODULES[i].title;
+  renderScene('r');
+  updDots();
+}
+
+function renderScene(dir){
+  const stage=document.getElementById('stage');
+  const old=stage.querySelector('.scene.in');
+  if(old){ old.classList.remove('in'); old.classList.add('out'); setTimeout(()=>old.remove(),350); }
+  const m=MODULES[cM], sc=m.scenes[cS];
+  const el=document.createElement('div');
+  el.className='scene';
+  el.innerHTML=sc.html;
+  stage.appendChild(el);
+  // slight delay for DOM
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    el.classList.add('in');
+    // auto-start narration — will work after first user gesture has been made (they tapped a module card)
+    setTimeout(()=>startSceneNar(), 200);
+  }));
+  document.getElementById('prevBtn').disabled=false;
+  document.getElementById('nextBtn').textContent=cS===m.scenes.length-1?'Concluir ✓':'Próximo →';
+  updDots();
+}
+
+function updDots(){
+  const t=MODULES[cM].scenes.length;
+  document.getElementById('pdots').innerHTML=Array.from({length:t},(_,i)=>
+    `<div class="pdot ${i<cS?'done':i===cS?'cur':''}" style="min-width:${Math.max(12,48/t)}px"></div>`
+  ).join('');
+}
+
+function nav(d){
+  sy.cancel(); speaking=false; clearAnimTimers();
+  const t=MODULES[cM].scenes.length;
+  if(d===1&&cS===t-1){ done.add(cM); showDone(); return; }
+  if(d===-1&&cS===0){ goHome(); return; }
+  cS=Math.max(0,Math.min(t-1,cS+d));
+  renderScene(d===1?'r':'l');
+}
+
+function showDone(){
+  sy.cancel(); speaking=false; clearAnimTimers();
+  const stage=document.getElementById('stage');
+  const old=stage.querySelector('.scene.in');
+  if(old) old.remove();
+  const el=document.createElement('div');
+  el.className='scene in';
+  el.innerHTML=`<div class="done-scene"><div class="done-ring">🎉</div><h2>Módulo concluído!</h2><p>Muito bem! Tens o conhecimento para fazer a diferença em Moçambique.</p><button class="done-btn" onclick="goHome()">← Ver todos os módulos</button></div>`;
+  stage.appendChild(el);
+  document.getElementById('prevBtn').disabled=true;
+  document.getElementById('nextBtn').disabled=true;
+  speak('Parabéns! Completaste este módulo. Agora tens o conhecimento para fazer a diferença.');
+}
+
 renderHome();
 </script>
 </body>
